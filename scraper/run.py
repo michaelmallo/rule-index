@@ -18,6 +18,7 @@ from distiller import RawRuleObservation, SemanticEmbedder, distill_observations
 from github_client import GitHubRuleScraper, ScrapedFile
 from parser import extract_rules
 from seed_data import SAMPLE_SCRAPED_FILES, build_seed_rules
+from translator import EnglishNormalizer
 
 logging.basicConfig(
     level=logging.INFO,
@@ -26,11 +27,14 @@ logging.basicConfig(
 logger = logging.getLogger("rule-index.scraper")
 
 
-def files_to_observations(files: list[ScrapedFile]) -> list[RawRuleObservation]:
-    """Parse scraped agent files into raw rule observations."""
+def files_to_observations(
+    files: list[ScrapedFile],
+    normalizer: EnglishNormalizer | None = None,
+) -> list[RawRuleObservation]:
+    """Parse scraped agent files into English-normalized raw rule observations."""
     observations: list[RawRuleObservation] = []
     for scraped in files:
-        extracted = extract_rules(scraped.content)
+        extracted = extract_rules(scraped.content, normalizer=normalizer)
         for text in extracted:
             observations.append(
                 RawRuleObservation(
@@ -56,80 +60,93 @@ def run_pipeline(
 ) -> dict:
     """Execute the requested scraper/distillation mode and export JSON."""
     with RuleDatabase(db_path) as db:
-        if mode == "seed":
-            seed_rules = build_seed_rules()
-            logger.info("Seeding database with %d canonical rules...", len(seed_rules))
-            db.upsert_canonical_rules(seed_rules)
-        elif mode == "sample":
-            logger.info(
-                "Running end-to-end pipeline on %d sample agent files...",
-                len(SAMPLE_SCRAPED_FILES),
-            )
-            observations = files_to_observations(SAMPLE_SCRAPED_FILES)
-            logger.info("Extracted %d discrete rule directives.", len(observations))
-            inserted = db.upsert_observations(observations)
-            logger.info("Stored %d new raw rule observations in SQLite.", inserted)
-
-            embedder = SemanticEmbedder()
-            canonical = distill_observations(
-                observations,
-                similarity_threshold=similarity_threshold,
-                use_llm=use_llm,
-                embedder=embedder,
-            )
-            logger.info(
-                "Distilled %d observations into %d canonical clusters (backend=%s).",
-                len(observations),
-                len(canonical),
-                embedder.backend,
-            )
-            db.upsert_canonical_rules(canonical)
-        elif mode == "live":
-            # Ensure seed baseline exists on first run if database is empty
-            if not db.fetch_canonical_rules():
-                logger.info("Empty database detected; initializing with seed dataset first.")
-                db.upsert_canonical_rules(build_seed_rules())
-
-            scraper = GitHubRuleScraper(max_repos_per_target=max_repos_per_target)
-            scraped_files = scraper.scrape_all()
-            logger.info("Scraped %d files from GitHub.", len(scraped_files))
-
-            if scraped_files:
-                observations = files_to_observations(scraped_files)
-                inserted = db.upsert_observations(observations)
+        normalizer = EnglishNormalizer(conn=db.conn)
+        try:
+            if mode == "seed":
+                seed_rules = build_seed_rules()
+                logger.info("Seeding database with %d canonical rules...", len(seed_rules))
+                db.upsert_canonical_rules(seed_rules)
+            elif mode == "normalize":
+                logger.info("Normalizing all existing database records to English...")
+                norm_stats = db.normalize_existing_records(normalizer)
+                logger.info("English normalization complete: %s", norm_stats)
+            elif mode == "sample":
                 logger.info(
-                    "Extracted %d directives (%d newly stored).",
-                    len(observations),
-                    inserted,
+                    "Running end-to-end pipeline on %d sample agent files...",
+                    len(SAMPLE_SCRAPED_FILES),
                 )
+                observations = files_to_observations(SAMPLE_SCRAPED_FILES, normalizer=normalizer)
+                logger.info("Extracted %d English-normalized rule directives.", len(observations))
+                inserted = db.upsert_observations(observations)
+                logger.info("Stored %d new raw rule observations in SQLite.", inserted)
 
-                all_observations = db.load_all_observations()
                 embedder = SemanticEmbedder()
                 canonical = distill_observations(
-                    all_observations,
+                    observations,
                     similarity_threshold=similarity_threshold,
                     use_llm=use_llm,
                     embedder=embedder,
                 )
                 logger.info(
-                    "Distilled %d total observations into %d canonical rules (backend=%s).",
-                    len(all_observations),
+                    "Distilled %d observations into %d canonical clusters (backend=%s).",
+                    len(observations),
                     len(canonical),
                     embedder.backend,
                 )
                 db.upsert_canonical_rules(canonical)
-            else:
-                logger.warning("No files scraped in live mode; keeping existing database rules.")
-        else:
-            raise ValueError(f"Unsupported mode: {mode}")
+            elif mode == "live":
+                # Ensure seed baseline exists on first run if database is empty
+                if not db.fetch_canonical_rules():
+                    logger.info("Empty database detected; initializing with seed dataset first.")
+                    db.upsert_canonical_rules(build_seed_rules())
 
-        payload = db.export_json(json_outputs)
-        logger.info(
-            "Exported %d canonical rules to: %s",
-            payload["stats"]["total_rules"],
-            ", ".join(str(p) for p in json_outputs),
-        )
-        return payload
+                # Ensure any historical non-English rows are normalized to English
+                norm_stats = db.normalize_existing_records(normalizer)
+                if any(norm_stats.values()):
+                    logger.info("Normalized existing non-English records: %s", norm_stats)
+
+                scraper = GitHubRuleScraper(max_repos_per_target=max_repos_per_target)
+                scraped_files = scraper.scrape_all()
+                logger.info("Scraped %d files from GitHub.", len(scraped_files))
+
+                if scraped_files:
+                    observations = files_to_observations(scraped_files, normalizer=normalizer)
+                    inserted = db.upsert_observations(observations)
+                    logger.info(
+                        "Extracted %d English-normalized directives (%d newly stored).",
+                        len(observations),
+                        inserted,
+                    )
+
+                    all_observations = db.load_all_observations()
+                    embedder = SemanticEmbedder()
+                    canonical = distill_observations(
+                        all_observations,
+                        similarity_threshold=similarity_threshold,
+                        use_llm=use_llm,
+                        embedder=embedder,
+                    )
+                    logger.info(
+                        "Distilled %d total observations into %d canonical rules (backend=%s).",
+                        len(all_observations),
+                        len(canonical),
+                        embedder.backend,
+                    )
+                    db.upsert_canonical_rules(canonical)
+                else:
+                    logger.warning("No files scraped in live mode; keeping existing database rules.")
+            else:
+                raise ValueError(f"Unsupported mode: {mode}")
+
+            payload = db.export_json(json_outputs)
+            logger.info(
+                "Exported %d canonical rules to: %s",
+                payload["stats"]["total_rules"],
+                ", ".join(str(p) for p in json_outputs),
+            )
+            return payload
+        finally:
+            normalizer.close()
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -138,9 +155,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=("live", "seed", "sample"),
+        choices=("live", "seed", "sample", "normalize"),
         default="live",
-        help="Pipeline mode: 'live' scrapes GitHub API, 'seed' loads seed data, 'sample' runs full ETL on built-in sample files.",
+        help="Pipeline mode: 'live' scrapes GitHub API, 'seed' loads seed data, 'sample' runs ETL on built-in sample files, 'normalize' normalizes existing DB records to English.",
     )
     parser.add_argument(
         "--db",

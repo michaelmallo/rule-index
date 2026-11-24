@@ -14,7 +14,8 @@ import {
   Star,
   X,
 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { FilterPanel } from './components/FilterPanel';
 import { RuleDetailDialog } from './components/RuleDetailDialog';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
@@ -69,6 +70,8 @@ export function App() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   const mobileDrawerRef = useRef<HTMLDialogElement>(null);
+  const rulesListRef = useRef<HTMLOListElement>(null);
+  const [tenRulesHeight, setTenRulesHeight] = useState<number | null>(null);
 
   // Sync theme to document & <meta name="color-scheme">
   useEffect(() => {
@@ -307,6 +310,33 @@ export function App() {
       return dataset.generated_at.slice(0, 10);
     }
   }, [dataset?.generated_at]);
+
+  // Measure the rendered height of the first 10 rules so the scrollbox displays at least 10 rules
+  // or fits the viewport height, whichever is larger.
+  useLayoutEffect(() => {
+    const listEl = rulesListRef.current;
+    if (!listEl || filteredRules.length <= 10) {
+      setTenRulesHeight(null);
+      return;
+    }
+
+    const measure = () => {
+      const items = listEl.children;
+      if (items.length < 10) return;
+      const firstRect = items[0].getBoundingClientRect();
+      const tenthRect = items[9].getBoundingClientRect();
+      const span = Math.ceil(tenthRect.bottom - firstRect.top + 32);
+      if (span > 0) {
+        setTenRulesHeight(span);
+      }
+    };
+
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(listEl);
+    return () => ro.disconnect();
+  }, [filteredRules]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -642,20 +672,37 @@ export function App() {
                 </button>
               </div>
             ) : (
-              <ol className="flex flex-col gap-3" aria-label="Ranked AI coding agent rules">
-                {filteredRules.map((rule, index) => {
-                  const rank = index + 1;
-                  const isCopied = copiedId === rule.id;
+              <div
+                className="rules-scrollbox rounded-2xl border p-3 sm:p-4"
+                data-fits-all={filteredRules.length <= 10 ? 'true' : 'false'}
+                tabIndex={0}
+                aria-label={`Ranked AI coding agent rules (${filteredRules.length} total)`}
+                style={
+                  {
+                    backgroundColor: 'var(--bg-subtle)',
+                    borderColor: 'var(--border-subtle)',
+                    ...(tenRulesHeight !== null ? { '--ten-rules-height': `${tenRulesHeight}px` } : {}),
+                  } as CSSProperties
+                }
+              >
+                <ol
+                  ref={rulesListRef}
+                  className="flex flex-col gap-3"
+                  aria-label="Ranked AI coding agent rules"
+                >
+                  {filteredRules.map((rule, index) => {
+                    const rank = index + 1;
+                    const isCopied = copiedId === rule.id;
 
-                  return (
-                    <li
-                      key={rule.id}
-                      className="rounded-2xl border p-4 transition-colors sm:p-5"
-                      style={{
-                        backgroundColor: 'var(--bg-surface)',
-                        borderColor: 'var(--border-subtle)',
-                      }}
-                    >
+                    return (
+                      <li
+                        key={rule.id}
+                        className="rules-scrollbox-item rounded-2xl border p-4 transition-colors sm:p-5"
+                        style={{
+                          backgroundColor: 'var(--bg-surface)',
+                          borderColor: 'var(--border-subtle)',
+                        }}
+                      >
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         {/* Rank + Main Rule Info */}
                         <div className="flex items-start gap-3.5 min-w-0 flex-1">
@@ -783,8 +830,9 @@ export function App() {
                       </div>
                     </li>
                   );
-                })}
-              </ol>
+                  })}
+                </ol>
+              </div>
             )}
           </div>
         </div>

@@ -3,6 +3,12 @@
 from __future__ import annotations
 
 import re
+from typing import TYPE_CHECKING
+
+from translator import is_english, normalize_typography
+
+if TYPE_CHECKING:
+    from translator import EnglishNormalizer
 
 # Patterns to strip before extracting directives
 FRONTMATTER_RE = re.compile(r"\A---\s*\n.*?\n---\s*\n", re.DOTALL)
@@ -128,8 +134,11 @@ def _has_directive_intent(text: str) -> bool:
     return any(cue in lower for cue in DIRECTIVE_CUES)
 
 
-def extract_rules(markdown_content: str) -> list[str]:
-    """Split a markdown/rule document into clean, discrete behavioral directives."""
+def extract_rules(
+    markdown_content: str,
+    normalizer: EnglishNormalizer | None = None,
+) -> list[str]:
+    """Split a markdown/rule document into clean, discrete English behavioral directives."""
     if not markdown_content or not markdown_content.strip():
         return []
 
@@ -167,9 +176,19 @@ def extract_rules(markdown_content: str) -> list[str]:
             candidates.extend(sentences)
 
         for candidate in candidates:
-            normalized = _clean_markdown(candidate)
+            normalized = normalize_typography(_clean_markdown(candidate))
             if _is_noise(normalized):
                 continue
+
+            # Normalize non-English candidates to English before checking directive cues
+            if not is_english(normalized):
+                if normalizer is None:
+                    continue
+                translated = normalizer.normalize(normalized)
+                if not translated or _is_noise(translated):
+                    continue
+                normalized = translated
+
             if not _has_directive_intent(normalized):
                 continue
 

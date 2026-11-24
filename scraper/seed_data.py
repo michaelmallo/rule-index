@@ -879,6 +879,7 @@ title: Payments API Agent Guide
 - Always verify file paths and symbols exist before referencing them.
 - Never silently swallow exceptions; log structured context or rethrow.
 - Always run the test suite and linter before concluding your work.
+- Niemals Geheimnisse oder API-Schlüssel in Git committen.
 """,
     ),
 ]
