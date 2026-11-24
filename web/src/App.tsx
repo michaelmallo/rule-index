@@ -2,7 +2,6 @@ import {
   ArrowUpDown,
   Check,
   Copy,
-  Database,
   Flame,
   GitBranch,
   Layers,
@@ -392,60 +391,69 @@ export function App() {
           borderColor: 'var(--border-subtle)',
         }}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-bold shadow-sm"
-              style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
-              aria-hidden="true"
-            >
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold leading-6 tracking-tight sm:text-lg sm:leading-7" style={{ color: 'var(--text-primary)' }}>
-                  RuleIndex
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setShareOpen(true)}
-                  aria-label="Share RuleIndex"
-                  title="Share RuleIndex"
-                  className="inline-flex h-6 items-center justify-center rounded-md border px-1.5 transition-colors cursor-pointer sm:h-7"
-                  style={{
-                    backgroundColor: 'var(--bg-subtle)',
-                    borderColor: 'var(--border-subtle)',
-                    color: 'var(--text-secondary)',
-                  }}
-                >
-                  <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
-                </button>
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-3 py-2 sm:px-6 sm:py-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0 sm:gap-2.5">
+              <div
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-bold shadow-sm sm:h-9 sm:w-9"
+                style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                aria-hidden="true"
+              >
+                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
-              <p className="hidden truncate text-xs md:block" style={{ color: 'var(--text-muted)' }}>
-                Canonical AI coding agent rules clustered from public GitHub repositories
-              </p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span
+                    className="text-sm font-bold leading-5 tracking-tight sm:text-lg sm:leading-7"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    RuleIndex
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShareOpen(true)}
+                    aria-label="Share RuleIndex"
+                    title="Share RuleIndex"
+                    className="inline-flex h-5 shrink-0 items-center justify-center rounded-md border px-1.5 transition-colors cursor-pointer sm:h-7"
+                    style={{
+                      backgroundColor: 'var(--bg-subtle)',
+                      borderColor: 'var(--border-subtle)',
+                      color: 'var(--text-secondary)',
+                    }}
+                  >
+                    <Share2 className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
+                  </button>
+                </div>
+                <p className="hidden truncate text-xs md:block" style={{ color: 'var(--text-muted)' }}>
+                  Canonical AI coding agent rules clustered from public GitHub repositories
+                </p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center">
+              <ThemeSwitcher theme={theme} onChange={setTheme} />
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <ThemeSwitcher theme={theme} onChange={setTheme} />
+          {/* Mobile / Tablet Filters Trigger directly below the title */}
+          <div className="flex items-center lg:hidden">
             <button
               type="button"
               onClick={() => setMobileDrawerOpen(true)}
               aria-label="Open filters"
               aria-expanded={mobileDrawerOpen}
-              className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold lg:hidden cursor-pointer"
+              className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold cursor-pointer"
               style={{
                 backgroundColor: 'var(--bg-subtle)',
                 borderColor: 'var(--border-subtle)',
                 color: 'var(--text-primary)',
               }}
             >
-              <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+              <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
               <span>Filters</span>
               {activeFilterCount > 0 && (
                 <span
-                  className="inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] font-bold"
+                  className="inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold"
                   style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
                 >
                   {activeFilterCount}
@@ -457,52 +465,51 @@ export function App() {
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:py-8">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-3 py-3 sm:px-6 sm:py-5 lg:py-6">
         {/* Compact Hero Stats Strip */}
         <section
           aria-label="Dataset summary"
-          className="mb-6 grid grid-cols-2 gap-3 rounded-2xl border p-4 sm:grid-cols-4 sm:gap-4"
+          className="mb-3 grid grid-cols-2 gap-2.5 rounded-2xl border p-3 sm:mb-4 sm:grid-cols-4 sm:gap-4 sm:p-4"
           style={{
             backgroundColor: 'var(--bg-surface)',
             borderColor: 'var(--border-subtle)',
           }}
         >
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+            <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Canonical Rules
             </span>
-            <span className="text-xl font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-base font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
               {dataset ? dataset.stats.total_rules.toLocaleString() : '—'}
             </span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+            <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Repos Indexed
             </span>
-            <span className="text-xl font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-base font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
               {dataset ? dataset.stats.total_repos_indexed.toLocaleString() : '—'}
             </span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+            <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Agent Systems
             </span>
-            <span className="text-xl font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-base font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
               {ALL_AGENTS.length}
             </span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+            <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Last Updated
             </span>
-            <span className="inline-flex items-center gap-1.5 text-sm font-semibold sm:text-base" style={{ color: 'var(--text-primary)' }}>
-              <Database className="h-4 w-4 shrink-0" style={{ color: 'var(--accent)' }} aria-hidden="true" />
+            <span className="text-xs font-semibold sm:text-base" style={{ color: 'var(--text-primary)' }}>
               {updatedLabel}
             </span>
           </div>
         </section>
 
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+        <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-start lg:gap-5">
           {/* Desktop Sticky Sidebar */}
           <aside
             aria-label="Rule filters"
@@ -529,16 +536,16 @@ export function App() {
           <div className="min-w-0 flex-1">
             {/* Search & Sort Controls */}
             <div
-              className="mb-4 flex flex-col gap-3 rounded-2xl border p-3.5 sm:p-4"
+              className="mb-3 flex flex-col gap-2.5 rounded-2xl border p-2.5 sm:mb-4 sm:gap-3 sm:p-4"
               style={{
                 backgroundColor: 'var(--bg-surface)',
                 borderColor: 'var(--border-subtle)',
               }}
             >
-              <div className="flex flex-col gap-3 md:flex-row md:items-center">
+              <div className="flex flex-col gap-2 sm:gap-3 md:flex-row md:items-center">
                 <div className="relative flex-1">
                   <Search
-                    className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
+                    className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 sm:h-4 sm:w-4"
                     style={{ color: 'var(--text-muted)' }}
                     aria-hidden="true"
                   />
@@ -546,9 +553,9 @@ export function App() {
                     type="search"
                     value={filters.query}
                     onChange={(e) => setFilters((prev) => ({ ...prev, query: e.target.value }))}
-                    placeholder="Search rules, conventions, agents, or repos (e.g. secrets, TypeScript, pytest)..."
+                    placeholder="Search rules, conventions, agents, or repos..."
                     aria-label="Search distilled rules"
-                    className="min-h-10 w-full rounded-xl border py-2 pl-9 pr-9 text-sm"
+                    className="min-h-9 w-full rounded-xl border py-1.5 pl-8 pr-8 text-xs sm:min-h-10 sm:py-2 sm:pl-9 sm:pr-9 sm:text-sm"
                     style={{
                       backgroundColor: 'var(--bg-subtle)',
                       borderColor: 'var(--border-subtle)',
@@ -563,7 +570,7 @@ export function App() {
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-1 cursor-pointer"
                       style={{ color: 'var(--text-muted)' }}
                     >
-                      <X className="h-4 w-4" aria-hidden="true" />
+                      <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -588,7 +595,7 @@ export function App() {
                         type="button"
                         onClick={() => setSort(opt.id)}
                         aria-pressed={active}
-                        className="inline-flex min-h-8 flex-1 items-center justify-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors whitespace-nowrap cursor-pointer sm:flex-initial"
+                        className="inline-flex min-h-7 flex-1 items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-colors whitespace-nowrap cursor-pointer sm:min-h-8 sm:flex-initial sm:gap-1.5 sm:px-2.5 sm:text-xs"
                         style={
                           active
                             ? {
@@ -725,7 +732,7 @@ export function App() {
               </div>
             ) : (
               <div
-                className="rules-scrollbox rounded-2xl border p-3 sm:p-4"
+                className="rules-scrollbox rounded-2xl border p-2 sm:p-3.5"
                 data-fits-all={filteredRules.length <= 10 ? 'true' : 'false'}
                 tabIndex={0}
                 aria-label={`Ranked AI coding agent rules (${filteredRules.length} total)`}
@@ -739,7 +746,7 @@ export function App() {
               >
                 <ol
                   ref={rulesListRef}
-                  className="flex flex-col gap-3"
+                  className="flex flex-col gap-2 sm:gap-3"
                   aria-label="Ranked AI coding agent rules"
                 >
                   {filteredRules.map((rule, index) => {
@@ -749,17 +756,17 @@ export function App() {
                     return (
                       <li
                         key={rule.id}
-                        className="rules-scrollbox-item rounded-2xl border p-4 transition-colors sm:p-5"
+                        className="rules-scrollbox-item rounded-xl border p-3 transition-colors sm:rounded-2xl sm:p-5"
                         style={{
                           backgroundColor: 'var(--bg-surface)',
                           borderColor: 'var(--border-subtle)',
                         }}
                       >
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
                         {/* Rank + Main Rule Info */}
-                        <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                        <div className="flex items-start gap-2.5 min-w-0 flex-1 sm:gap-3.5">
                           <span
-                            className="mt-0.5 inline-flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg px-2 text-xs font-bold tabular-nums"
+                            className="mt-0.5 inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-lg px-1.5 text-[11px] font-bold tabular-nums sm:h-8 sm:min-w-8 sm:px-2 sm:text-xs"
                             style={{
                               backgroundColor: rank <= 3 ? 'var(--rank-bg)' : 'var(--bg-subtle)',
                               color: rank <= 3 ? 'var(--rank-text)' : 'var(--text-primary)',
@@ -770,9 +777,9 @@ export function App() {
                           </span>
 
                           <div className="min-w-0 flex-1">
-                            <div className="mb-1.5 flex flex-wrap items-center gap-2">
+                            <div className="mb-1 flex flex-wrap items-center gap-1.5 sm:mb-1.5 sm:gap-2">
                               <span
-                                className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                                className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold sm:px-2.5 sm:text-[11px]"
                                 style={{
                                   backgroundColor: 'var(--accent-soft)',
                                   color: 'var(--accent-text)',
@@ -781,14 +788,14 @@ export function App() {
                                 {rule.category}
                               </span>
                               <span
-                                className="inline-flex items-center gap-1 text-xs font-semibold tabular-nums"
+                                className="inline-flex items-center gap-1 text-[11px] font-semibold tabular-nums sm:text-xs"
                                 style={{ color: 'var(--text-secondary)' }}
                               >
-                                <GitBranch className="h-3.5 w-3.5" style={{ color: 'var(--accent)' }} aria-hidden="true" />
+                                <GitBranch className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: 'var(--accent)' }} aria-hidden="true" />
                                 {rule.adoption_count.toLocaleString()} repos
                               </span>
                               <span
-                                className="inline-flex items-center gap-1 text-xs tabular-nums"
+                                className="inline-flex items-center gap-1 text-[11px] tabular-nums sm:text-xs"
                                 style={{ color: 'var(--text-muted)' }}
                               >
                                 <Star className="h-3 w-3" aria-hidden="true" />
@@ -797,25 +804,25 @@ export function App() {
                             </div>
 
                             <h2
-                              className="text-base font-bold leading-snug sm:text-[17px]"
+                              className="text-sm font-bold leading-snug sm:text-[17px]"
                               style={{ color: 'var(--text-primary)' }}
                             >
                               {rule.title}
                             </h2>
 
-                            <p className="mt-1 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                            <p className="mt-1 text-xs leading-relaxed sm:text-sm" style={{ color: 'var(--text-secondary)' }}>
                               {rule.summary}
                             </p>
 
                             {/* Target Agent Badges */}
-                            <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                            <div className="mt-2 flex flex-wrap items-center gap-1 sm:mt-3 sm:gap-1.5">
                               {rule.agents.map((agent) => (
                                 <button
                                   key={agent}
                                   type="button"
                                   onClick={() => toggleAgent(agent)}
                                   title={`Filter by ${agent}`}
-                                  className="inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium transition-colors cursor-pointer"
+                                  className="inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-medium transition-colors cursor-pointer sm:px-2 sm:text-[11px]"
                                   style={
                                     filters.agents.includes(agent)
                                       ? {
@@ -892,7 +899,7 @@ export function App() {
 
       {/* Footer */}
       <footer
-        className="mt-12 border-t py-6 text-center text-xs"
+        className="mt-6 border-t py-4 text-center text-[11px] sm:mt-8 sm:py-6 sm:text-xs"
         style={{
           borderColor: 'var(--border-subtle)',
           color: 'var(--text-muted)',
