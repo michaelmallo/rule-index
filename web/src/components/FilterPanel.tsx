@@ -50,6 +50,42 @@ export function FilterPanel({
         )}
       </div>
 
+      {/* Minimum Adoption */}
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-1.5 text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+          Minimum Adoption
+        </legend>
+        <div className="grid grid-cols-2 gap-1.5">
+          {MIN_ADOPTION_OPTIONS.map((opt) => {
+            const active = filters.minAdoption === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => onSetMinAdoption(opt.value)}
+                aria-pressed={active}
+                className="min-h-9 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors cursor-pointer"
+                style={
+                  active
+                    ? {
+                        backgroundColor: 'var(--accent-soft)',
+                        borderColor: 'var(--accent)',
+                        color: 'var(--accent-text)',
+                      }
+                    : {
+                        backgroundColor: 'var(--bg-subtle)',
+                        borderColor: 'var(--border-subtle)',
+                        color: 'var(--text-secondary)',
+                      }
+                }
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
+
       {/* Target Agent / System Multi-Select */}
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1.5 text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
@@ -145,42 +181,6 @@ export function FilterPanel({
                   {count}
                 </span>
               </label>
-            );
-          })}
-        </div>
-      </fieldset>
-
-      {/* Minimum Adoption */}
-      <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1.5 text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-          Minimum Adoption
-        </legend>
-        <div className="grid grid-cols-2 gap-1.5">
-          {MIN_ADOPTION_OPTIONS.map((opt) => {
-            const active = filters.minAdoption === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => onSetMinAdoption(opt.value)}
-                aria-pressed={active}
-                className="min-h-9 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors cursor-pointer"
-                style={
-                  active
-                    ? {
-                        backgroundColor: 'var(--accent-soft)',
-                        borderColor: 'var(--accent)',
-                        color: 'var(--accent-text)',
-                      }
-                    : {
-                        backgroundColor: 'var(--bg-subtle)',
-                        borderColor: 'var(--border-subtle)',
-                        color: 'var(--text-secondary)',
-                      }
-                }
-              >
-                {opt.label}
-              </button>
             );
           })}
         </div>

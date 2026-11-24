@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-24T14:06:39Z",
+  "generated_at": "2026-11-24T14:19:59Z",
   "stats": {
     "total_rules": 3547,
-    "total_repos_indexed": 954,
+    "total_repos_indexed": 238,
     "agents_covered": [
       "Universal",
       "Claude",

@@ -9,6 +9,7 @@ import {
   MessageSquareQuote,
   RotateCcw,
   Search,
+  Share2,
   SlidersHorizontal,
   Sparkles,
   Star,
@@ -18,6 +19,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { CSSProperties } from 'react';
 import { FilterPanel } from './components/FilterPanel';
 import { RuleDetailDialog } from './components/RuleDetailDialog';
+import { ShareDialog } from './components/ShareDialog';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { ToastRegion } from './components/ToastRegion';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -68,10 +70,47 @@ export function App() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const mobileDrawerRef = useRef<HTMLDialogElement>(null);
   const rulesListRef = useRef<HTMLOListElement>(null);
   const [tenRulesHeight, setTenRulesHeight] = useState<number | null>(null);
+
+  // Hydrate filters from shared URL query params if present
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.size) return;
+
+    const next: Partial<FilterState> = {};
+    const q = params.get('q');
+    if (q !== null) next.query = q;
+
+    const agentsParam = params.get('agents');
+    if (agentsParam) {
+      const validAgents = agentsParam.split(',').filter((a) => (ALL_AGENTS as readonly string[]).includes(a));
+      if (validAgents.length > 0) next.agents = validAgents;
+    }
+
+    const catsParam = params.get('categories');
+    if (catsParam) {
+      const validCats = catsParam.split(',').filter((c) => (ALL_CATEGORIES as readonly string[]).includes(c));
+      if (validCats.length > 0) next.categories = validCats;
+    }
+
+    const minParam = Number(params.get('min'));
+    if (minParam === 5 || minParam === 25 || minParam === 100) {
+      next.minAdoption = minParam;
+    }
+
+    const sortParam = params.get('sort');
+    if (sortParam === 'repos' || sortParam === 'weighted' || sortParam === 'trending') {
+      next.sort = sortParam;
+    }
+
+    if (Object.keys(next).length > 0) {
+      setFilters((prev) => ({ ...prev, ...next }));
+    }
+  }, [setFilters]);
 
   // Sync theme to document & <meta name="color-scheme">
   useEffect(() => {
@@ -301,13 +340,18 @@ export function App() {
   const updatedLabel = useMemo(() => {
     if (!dataset?.generated_at) return 'Daily sync';
     try {
-      return new Intl.DateTimeFormat('en-US', {
+      const formatted = new Intl.DateTimeFormat('en-US', {
         month: 'short',
         day: 'numeric',
         year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        timeZone: 'UTC',
       }).format(new Date(dataset.generated_at));
+      return `${formatted} UTC`;
     } catch {
-      return dataset.generated_at.slice(0, 10);
+      return dataset.generated_at;
     }
   }, [dataset?.generated_at]);
 
@@ -359,15 +403,23 @@ export function App() {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-base font-bold tracking-tight sm:text-lg" style={{ color: 'var(--text-primary)' }}>
+                <span className="text-base font-bold leading-6 tracking-tight sm:text-lg sm:leading-7" style={{ color: 'var(--text-primary)' }}>
                   RuleIndex
                 </span>
-                <span
-                  className="hidden rounded-full px-2 py-0.5 text-[11px] font-semibold sm:inline-flex"
-                  style={{ backgroundColor: 'var(--accent-soft)', color: 'var(--accent-text)' }}
+                <button
+                  type="button"
+                  onClick={() => setShareOpen(true)}
+                  aria-label="Share RuleIndex"
+                  title="Share RuleIndex"
+                  className="inline-flex h-6 items-center justify-center rounded-md border px-1.5 transition-colors cursor-pointer sm:h-7"
+                  style={{
+                    backgroundColor: 'var(--bg-subtle)',
+                    borderColor: 'var(--border-subtle)',
+                    color: 'var(--text-secondary)',
+                  }}
                 >
-                  Daily Distilled
-                </span>
+                  <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
+                </button>
               </div>
               <p className="hidden truncate text-xs md:block" style={{ color: 'var(--text-muted)' }}>
                 Canonical AI coding agent rules clustered from public GitHub repositories
@@ -428,7 +480,7 @@ export function App() {
               Repos Indexed
             </span>
             <span className="text-xl font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
-              {dataset ? `${dataset.stats.total_repos_indexed.toLocaleString()}+` : '—'}
+              {dataset ? dataset.stats.total_repos_indexed.toLocaleString() : '—'}
             </span>
           </div>
           <div className="flex flex-col gap-0.5">
@@ -919,6 +971,14 @@ export function App() {
         rank={selectedRule?.rank ?? null}
         onClose={() => setSelectedRule(null)}
         onCopyRule={handleCopyRule}
+      />
+
+      {/* Share Webpage Modal (<dialog>) */}
+      <ShareDialog
+        open={shareOpen}
+        filters={filters}
+        hasActiveFilters={hasActiveFilters}
+        onClose={() => setShareOpen(false)}
       />
 
       {/* Accessible Top-Layer Toast Notifications */}
