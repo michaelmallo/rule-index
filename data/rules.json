@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-24T14:19:59Z",
+  "generated_at": "2026-11-24T14:47:51Z",
   "stats": {
-    "total_rules": 3547,
+    "total_rules": 3555,
     "total_repos_indexed": 238,
     "agents_covered": [
       "Universal",
@@ -2370,8 +2370,8 @@
       ],
       "adoption_count": 3,
       "weighted_score": 12.1,
-      "first_seen": "2026-11-24T14:06:00.471709+00:00",
-      "last_updated": "2026-11-24T14:06:02.921905+00:00",
+      "first_seen": "2026-11-24T14:47:04.946927+00:00",
+      "last_updated": "2026-11-24T14:47:07.437574+00:00",
       "examples": [
         {
           "text": "Makes import statements more maintainable.",
@@ -3397,6 +3397,49 @@
           "repo_url": "https://github.com/KlausLeon/TestLeaf_PlaywrightAutomationTraining",
           "file_path": ".GITHUB/copilot-instructions.md",
           "file_url": "https://github.com/KlausLeon/TestLeaf_PlaywrightAutomationTraining/blob/b06998873a92051ec725e22f2031ac7b13bdb096/.GITHUB/copilot-instructions.md",
+          "stars": 0,
+          "agent": "Copilot"
+        }
+      ]
+    },
+    {
+      "id": "never-use-inline-styles-d97e9781",
+      "title": "Never use inline styles",
+      "summary": "Never use inline styles.",
+      "category": "Code Style & Architecture",
+      "agents": [
+        "Copilot",
+        "Cursor"
+      ],
+      "adoption_count": 3,
+      "weighted_score": 5.0,
+      "first_seen": "2026-11-24T13:14:12.753548+00:00",
+      "last_updated": "2026-11-24T14:47:11.715061+00:00",
+      "examples": [
+        {
+          "text": "Generally avoid inline styles unless necessary.",
+          "repo": "vincanger/envelope-budgeting-test",
+          "repo_url": "https://github.com/vincanger/envelope-budgeting-test",
+          "file_path": ".cursorrules",
+          "file_url": "https://github.com/vincanger/envelope-budgeting-test/blob/458debd8cccd8115dcfd73da317fdb94aa90f572/.cursorrules",
+          "stars": 102,
+          "agent": "Cursor"
+        },
+        {
+          "text": "Never use inline styles.",
+          "repo": "KevinHaseDev/Portfolio",
+          "repo_url": "https://github.com/KevinHaseDev/Portfolio",
+          "file_path": ".Github/copilot-instructions.md",
+          "file_url": "https://github.com/KevinHaseDev/Portfolio/blob/7967141ff4f570d9be623f7f0499179e179a02b2/.Github/copilot-instructions.md",
+          "stars": 0,
+          "agent": "Copilot"
+        },
+        {
+          "text": "Never use inline styles.",
+          "repo": "Younes-Darabi/join",
+          "repo_url": "https://github.com/Younes-Darabi/join",
+          "file_path": ".Github/copilot-instructions.md",
+          "file_url": "https://github.com/Younes-Darabi/join/blob/aa4ff6b41a3219cbc6fdb28eb12cccb789f146c6/.Github/copilot-instructions.md",
           "stars": 0,
           "agent": "Copilot"
         }
@@ -4831,6 +4874,40 @@
       ]
     },
     {
+      "id": "don-t-commit-secrets-or-keys-to-the-repository-692a2890",
+      "title": "Don’t commit secrets or keys to the repository",
+      "summary": "Don’t commit secrets or keys to the repository.",
+      "category": "Security & Secrets",
+      "agents": [
+        "Copilot",
+        "Windsurf"
+      ],
+      "adoption_count": 2,
+      "weighted_score": 6.9,
+      "first_seen": "2026-11-24T13:14:12.788022+00:00",
+      "last_updated": "2026-11-24T14:47:15.098270+00:00",
+      "examples": [
+        {
+          "text": "Don't commit sensitive data (API keys, secrets).",
+          "repo": "opgginc/laravel-mcp-server",
+          "repo_url": "https://github.com/opgginc/laravel-mcp-server",
+          "file_path": ".windsurfrules",
+          "file_url": "https://github.com/opgginc/laravel-mcp-server/blob/0dae1cac677a48339c7e6b23659c10e26c801513/.windsurfrules",
+          "stars": 331,
+          "agent": "Windsurf"
+        },
+        {
+          "text": "Don’t commit secrets or keys to the repository.",
+          "repo": "NabuCasa/hass-nabucasa",
+          "repo_url": "https://github.com/NabuCasa/hass-nabucasa",
+          "file_path": ".github/copilot-instructions.md",
+          "file_url": "https://github.com/NabuCasa/hass-nabucasa/blob/bda0022650ecc28b0f61e90e7ed5318e2d71a8aa/.github/copilot-instructions.md",
+          "stars": 223,
+          "agent": "Copilot"
+        }
+      ]
+    },
+    {
       "id": "use-import-type-for-type-only-imports-fae04d19",
       "title": "Use `import type` for type-only imports",
       "summary": "Use `import type` for type-only imports.",
@@ -4875,7 +4952,7 @@
       "adoption_count": 2,
       "weighted_score": 6.9,
       "first_seen": "2026-11-24T13:14:12.787992+00:00",
-      "last_updated": "2026-11-24T13:14:12.874596+00:00",
+      "last_updated": "2026-11-24T14:47:15.098245+00:00",
       "examples": [
         {
           "text": "Log errors appropriately.",
@@ -4993,6 +5070,40 @@
           "file_path": ".cursorrules",
           "file_url": "https://github.com/modern-agile-team/modern-kit/blob/c86e3a399e68af5d4512603291e9197634ca4246/.cursorrules",
           "stars": 158,
+          "agent": "Cursor"
+        }
+      ]
+    },
+    {
+      "id": "a-wrapper-to-simplify-try-catch-blocks-for-async-128e4781",
+      "title": "A wrapper to simplify try-catch blocks for asynchronous or synchronous functions",
+      "summary": "A wrapper to simplify try-catch blocks for asynchronous or synchronous functions.",
+      "category": "Error Handling",
+      "agents": [
+        "Cline",
+        "Cursor"
+      ],
+      "adoption_count": 2,
+      "weighted_score": 6.7,
+      "first_seen": "2026-11-24T13:14:12.753464+00:00",
+      "last_updated": "2026-11-24T13:14:12.811395+00:00",
+      "examples": [
+        {
+          "text": "A wrapper to simplify try-catch blocks for asynchronous or synchronous functions.",
+          "repo": "cyanheads/atlas-mcp-server",
+          "repo_url": "https://github.com/cyanheads/atlas-mcp-server",
+          "file_path": ".clinerules",
+          "file_url": "https://github.com/cyanheads/atlas-mcp-server/blob/5a0bfdc08f9d0d106e69432bcaa606cc414340f1/.clinerules",
+          "stars": 481,
+          "agent": "Cline"
+        },
+        {
+          "text": "Client-side: Use try/catch blocks with async/await.",
+          "repo": "vincanger/envelope-budgeting-test",
+          "repo_url": "https://github.com/vincanger/envelope-budgeting-test",
+          "file_path": ".cursorrules",
+          "file_url": "https://github.com/vincanger/envelope-budgeting-test/blob/458debd8cccd8115dcfd73da317fdb94aa90f572/.cursorrules",
+          "stars": 102,
           "agent": "Cursor"
         }
       ]
@@ -5240,22 +5351,23 @@
       "category": "Code Style & Architecture",
       "agents": [
         "Codex",
+        "Copilot",
         "Cursor",
         "Universal"
       ],
       "adoption_count": 2,
       "weighted_score": 6.5,
       "first_seen": "2026-11-24T13:14:12.619592+00:00",
-      "last_updated": "2026-11-24T13:14:12.757806+00:00",
+      "last_updated": "2026-11-24T14:47:15.098253+00:00",
       "examples": [
         {
-          "text": "Never manually edit generated files.",
-          "repo": "kubernetes-sigs/cluster-api-provider-openstack",
-          "repo_url": "https://github.com/kubernetes-sigs/cluster-api-provider-openstack",
-          "file_path": "AGENTS.md",
-          "file_url": "https://github.com/kubernetes-sigs/cluster-api-provider-openstack/blob/9357da198c6932b85101d03cf581b7fe167050cf/AGENTS.md",
-          "stars": 374,
-          "agent": "Universal"
+          "text": "Don't create files unless they're necessary to achieve the goal.",
+          "repo": "NabuCasa/hass-nabucasa",
+          "repo_url": "https://github.com/NabuCasa/hass-nabucasa",
+          "file_path": ".github/copilot-instructions.md",
+          "file_url": "https://github.com/NabuCasa/hass-nabucasa/blob/bda0022650ecc28b0f61e90e7ed5318e2d71a8aa/.github/copilot-instructions.md",
+          "stars": 223,
+          "agent": "Copilot"
         },
         {
           "text": "Always create or modify the actual files in the file system.",
@@ -5741,7 +5853,7 @@
       "adoption_count": 2,
       "weighted_score": 6.2,
       "first_seen": "2026-11-24T13:14:12.668161+00:00",
-      "last_updated": "2026-11-24T13:14:12.874590+00:00",
+      "last_updated": "2026-11-24T14:47:15.098238+00:00",
       "examples": [
         {
           "text": "Comments policy: Don’t add unnecessary inline comments — prefer clear names and structure.",
@@ -7121,7 +7233,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7145,7 +7257,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7193,7 +7305,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7241,7 +7353,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7265,7 +7377,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7289,7 +7401,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7313,7 +7425,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7337,7 +7449,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7361,7 +7473,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7385,7 +7497,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7409,7 +7521,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7433,7 +7545,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7529,7 +7641,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7577,7 +7689,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7625,7 +7737,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7649,7 +7761,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7673,7 +7785,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7697,7 +7809,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7745,7 +7857,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7841,7 +7953,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7865,7 +7977,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7889,7 +8001,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7913,7 +8025,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7961,7 +8073,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -7985,7 +8097,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8009,7 +8121,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8033,7 +8145,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8057,7 +8169,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8225,7 +8337,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8321,7 +8433,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8345,7 +8457,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8369,7 +8481,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8417,7 +8529,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8441,7 +8553,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8465,7 +8577,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -8489,7 +8601,7 @@
           "repo_url": "https://github.com/s1dashu/ip-as-logo-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/s1dashu/ip-as-logo-skill/blob/6e808f31f30f6a358ccacc85cc145573de3f74a2/SKILL.md",
-          "stars": 6692,
+          "stars": 6693,
           "agent": "Universal"
         }
       ]
@@ -9417,7 +9529,7 @@
           "repo_url": "https://github.com/samuelgursky/davinci-resolve-mcp",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/samuelgursky/davinci-resolve-mcp/blob/79d68deec0a25917b9aa63a6b4d633c19dafea6a/.windsurfrules",
-          "stars": 4335,
+          "stars": 4339,
           "agent": "Windsurf"
         }
       ]
@@ -9688,7 +9800,7 @@
           "repo_url": "https://github.com/samuelgursky/davinci-resolve-mcp",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/samuelgursky/davinci-resolve-mcp/blob/79d68deec0a25917b9aa63a6b4d633c19dafea6a/.windsurfrules",
-          "stars": 4335,
+          "stars": 4339,
           "agent": "Windsurf"
         }
       ]
@@ -9787,7 +9899,7 @@
           "repo_url": "https://github.com/samuelgursky/davinci-resolve-mcp",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/samuelgursky/davinci-resolve-mcp/blob/79d68deec0a25917b9aa63a6b4d633c19dafea6a/.windsurfrules",
-          "stars": 4335,
+          "stars": 4339,
           "agent": "Windsurf"
         }
       ]
@@ -13319,7 +13431,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -13441,7 +13553,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -13710,7 +13822,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -13758,7 +13870,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -13855,7 +13967,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -13879,7 +13991,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -13903,7 +14015,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -13951,7 +14063,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -14361,7 +14473,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -14483,7 +14595,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -14606,7 +14718,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -14944,7 +15056,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -14968,7 +15080,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -15017,7 +15129,7 @@
           "repo_url": "https://github.com/zanwei/design-dna",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/zanwei/design-dna/blob/593e39bc9e3652734653bd75544a333d7d43615e/SKILL.md",
-          "stars": 2151,
+          "stars": 2152,
           "agent": "Universal"
         }
       ]
@@ -15349,8 +15461,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 4.2,
-      "first_seen": "2026-11-24T14:05:51.704109+00:00",
-      "last_updated": "2026-11-24T14:05:51.704109+00:00",
+      "first_seen": "2026-11-24T14:46:56.073913+00:00",
+      "last_updated": "2026-11-24T14:46:56.073913+00:00",
       "examples": [
         {
           "text": "Custom validation rules use snake_case.",
@@ -18935,7 +19047,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -19057,7 +19169,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -19081,7 +19193,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -19882,7 +19994,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -20267,7 +20379,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -20823,7 +20935,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -20847,7 +20959,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -21213,7 +21325,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -21262,7 +21374,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -21310,7 +21422,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -21349,8 +21461,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.9,
-      "first_seen": "2026-11-24T14:06:06.652261+00:00",
-      "last_updated": "2026-11-24T14:06:06.652261+00:00",
+      "first_seen": "2026-11-24T14:47:16.220480+00:00",
+      "last_updated": "2026-11-24T14:47:16.220480+00:00",
       "examples": [
         {
           "text": "Original task statement.",
@@ -22111,7 +22223,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -22135,7 +22247,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -22255,7 +22367,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -22328,7 +22440,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -22768,7 +22880,7 @@
           "repo_url": "https://github.com/ythx-101/live-panel-skill",
           "file_path": "SKILL.md",
           "file_url": "https://github.com/ythx-101/live-panel-skill/blob/d5aa86d8a5729cea2c78f083df672977f168a147/SKILL.md",
-          "stars": 879,
+          "stars": 880,
           "agent": "Universal"
         }
       ]
@@ -25233,8 +25345,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.8,
-      "first_seen": "2026-11-24T14:05:53.297890+00:00",
-      "last_updated": "2026-11-24T14:05:53.297890+00:00",
+      "first_seen": "2026-11-24T14:46:57.685088+00:00",
+      "last_updated": "2026-11-24T14:46:57.685088+00:00",
       "examples": [
         {
           "text": "Write human-readable code.",
@@ -25891,7 +26003,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.windsurfrules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Windsurf"
         }
       ]
@@ -26059,7 +26171,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.windsurfrules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Windsurf"
         }
       ]
@@ -26515,7 +26627,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".clinerules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.clinerules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Cline"
         }
       ]
@@ -26611,7 +26723,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".clinerules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.clinerules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Cline"
         }
       ]
@@ -26899,7 +27011,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.windsurfrules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Windsurf"
         }
       ]
@@ -27092,7 +27204,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.windsurfrules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Windsurf"
         }
       ]
@@ -27284,7 +27396,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".clinerules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.clinerules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Cline"
         }
       ]
@@ -27332,7 +27444,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.windsurfrules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Windsurf"
         }
       ]
@@ -27357,7 +27469,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.windsurfrules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Windsurf"
         }
       ]
@@ -27814,7 +27926,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.windsurfrules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Windsurf"
         }
       ]
@@ -27887,7 +27999,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.windsurfrules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Windsurf"
         }
       ]
@@ -28007,7 +28119,7 @@
           "repo_url": "https://github.com/redf0x1/camofox-browser",
           "file_path": ".clinerules",
           "file_url": "https://github.com/redf0x1/camofox-browser/blob/512dc096866b8d4d2bc6d4f644f743a2eb68d7b2/.clinerules",
-          "stars": 455,
+          "stars": 456,
           "agent": "Cline"
         }
       ]
@@ -28262,8 +28374,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.7,
-      "first_seen": "2026-11-24T14:06:01.461806+00:00",
-      "last_updated": "2026-11-24T14:06:01.461806+00:00",
+      "first_seen": "2026-11-24T14:47:05.948935+00:00",
+      "last_updated": "2026-11-24T14:47:05.948935+00:00",
       "examples": [
         {
           "text": "Write Simple, Clear Code.",
@@ -28949,7 +29061,7 @@
           "repo_url": "https://github.com/raysonmeng/agent-bridge",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/raysonmeng/agent-bridge/blob/0244dfa2d6dfd36a67531426b01714eda1b215eb/.windsurfrules",
-          "stars": 439,
+          "stars": 440,
           "agent": "Windsurf"
         }
       ]
@@ -29219,7 +29331,7 @@
           "repo_url": "https://github.com/raysonmeng/agent-bridge",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/raysonmeng/agent-bridge/blob/0244dfa2d6dfd36a67531426b01714eda1b215eb/.windsurfrules",
-          "stars": 439,
+          "stars": 440,
           "agent": "Windsurf"
         }
       ]
@@ -29541,6 +29653,31 @@
       ]
     },
     {
+      "id": "never-manually-edit-generated-files-5dd22433",
+      "title": "Never manually edit generated files",
+      "summary": "Never manually edit generated files.",
+      "category": "Code Style & Architecture",
+      "agents": [
+        "Codex",
+        "Universal"
+      ],
+      "adoption_count": 1,
+      "weighted_score": 3.6,
+      "first_seen": "2026-11-24T13:14:12.619592+00:00",
+      "last_updated": "2026-11-24T13:14:12.619592+00:00",
+      "examples": [
+        {
+          "text": "Never manually edit generated files.",
+          "repo": "kubernetes-sigs/cluster-api-provider-openstack",
+          "repo_url": "https://github.com/kubernetes-sigs/cluster-api-provider-openstack",
+          "file_path": "AGENTS.md",
+          "file_url": "https://github.com/kubernetes-sigs/cluster-api-provider-openstack/blob/9357da198c6932b85101d03cf581b7fe167050cf/AGENTS.md",
+          "stars": 374,
+          "agent": "Universal"
+        }
+      ]
+    },
+    {
       "id": "no-junit-vintage-engine-fully-migrated-to-junit--fcf7f612",
       "title": "No JUnit vintage engine (fully migrated to JUnit 5)",
       "summary": "No JUnit vintage engine (fully migrated to JUnit 5).",
@@ -29574,8 +29711,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.6,
-      "first_seen": "2026-11-24T14:05:54.098311+00:00",
-      "last_updated": "2026-11-24T14:05:54.098311+00:00",
+      "first_seen": "2026-11-24T14:46:58.488360+00:00",
+      "last_updated": "2026-11-24T14:46:58.488360+00:00",
       "examples": [
         {
           "text": "Optimize images (use next/image).",
@@ -30806,7 +30943,7 @@
           "repo_url": "https://github.com/raysonmeng/agent-bridge",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/raysonmeng/agent-bridge/blob/0244dfa2d6dfd36a67531426b01714eda1b215eb/.windsurfrules",
-          "stars": 439,
+          "stars": 440,
           "agent": "Windsurf"
         }
       ]
@@ -30878,7 +31015,7 @@
           "repo_url": "https://github.com/raysonmeng/agent-bridge",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/raysonmeng/agent-bridge/blob/0244dfa2d6dfd36a67531426b01714eda1b215eb/.windsurfrules",
-          "stars": 439,
+          "stars": 440,
           "agent": "Windsurf"
         }
       ]
@@ -30902,7 +31039,7 @@
           "repo_url": "https://github.com/raysonmeng/agent-bridge",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/raysonmeng/agent-bridge/blob/0244dfa2d6dfd36a67531426b01714eda1b215eb/.windsurfrules",
-          "stars": 439,
+          "stars": 440,
           "agent": "Windsurf"
         }
       ]
@@ -31360,7 +31497,7 @@
           "repo_url": "https://github.com/raysonmeng/agent-bridge",
           "file_path": ".windsurfrules",
           "file_url": "https://github.com/raysonmeng/agent-bridge/blob/0244dfa2d6dfd36a67531426b01714eda1b215eb/.windsurfrules",
-          "stars": 439,
+          "stars": 440,
           "agent": "Windsurf"
         }
       ]
@@ -32481,8 +32618,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.5,
-      "first_seen": "2026-11-24T14:06:02.512539+00:00",
-      "last_updated": "2026-11-24T14:06:02.512539+00:00",
+      "first_seen": "2026-11-24T14:47:07.015785+00:00",
+      "last_updated": "2026-11-24T14:47:07.015785+00:00",
       "examples": [
         {
           "text": "Don't skip input validation in tools.",
@@ -37444,6 +37581,30 @@
       ]
     },
     {
+      "id": "do-only-what-the-task-asks-don-t-add-extras-36624a34",
+      "title": "Do only what the task asks. Don't add extras",
+      "summary": "Do only what the task asks. Don't add extras.",
+      "category": "Communication & Planning",
+      "agents": [
+        "Copilot"
+      ],
+      "adoption_count": 1,
+      "weighted_score": 3.4,
+      "first_seen": "2026-11-24T13:14:12.874605+00:00",
+      "last_updated": "2026-11-24T14:47:15.098251+00:00",
+      "examples": [
+        {
+          "text": "Do only what the task asks. Don’t add extras.",
+          "repo": "NabuCasa/hass-nabucasa",
+          "repo_url": "https://github.com/NabuCasa/hass-nabucasa",
+          "file_path": ".github/copilot-instructions.md",
+          "file_url": "https://github.com/NabuCasa/hass-nabucasa/blob/bda0022650ecc28b0f61e90e7ed5318e2d71a8aa/.github/copilot-instructions.md",
+          "stars": 223,
+          "agent": "Copilot"
+        }
+      ]
+    },
+    {
       "id": "do-only-what-the-task-asks-don-t-add-extras-351dccf0",
       "title": "Do only what the task asks. Don’t add extras",
       "summary": "Do only what the task asks. Don’t add extras.",
@@ -37636,6 +37797,30 @@
       ]
     },
     {
+      "id": "don-t-introduce-code-that-exposes-or-logs-secret-cfc93e7d",
+      "title": "Don't introduce code that exposes or logs secrets or keys",
+      "summary": "Don't introduce code that exposes or logs secrets or keys.",
+      "category": "Security & Secrets",
+      "agents": [
+        "Copilot"
+      ],
+      "adoption_count": 1,
+      "weighted_score": 3.4,
+      "first_seen": "2026-11-24T14:47:15.098268+00:00",
+      "last_updated": "2026-11-24T14:47:15.098268+00:00",
+      "examples": [
+        {
+          "text": "Don't introduce code that exposes or logs secrets or keys.",
+          "repo": "NabuCasa/hass-nabucasa",
+          "repo_url": "https://github.com/NabuCasa/hass-nabucasa",
+          "file_path": ".github/copilot-instructions.md",
+          "file_url": "https://github.com/NabuCasa/hass-nabucasa/blob/bda0022650ecc28b0f61e90e7ed5318e2d71a8aa/.github/copilot-instructions.md",
+          "stars": 223,
+          "agent": "Copilot"
+        }
+      ]
+    },
+    {
       "id": "don-t-modify-the-global-time-freeze-changes-affe-0cd3233d",
       "title": "Don't modify the global time freeze. Changes affect the whole suite",
       "summary": "Don't modify the global time freeze. Changes affect the whole suite.",
@@ -37694,7 +37879,7 @@
       "adoption_count": 1,
       "weighted_score": 3.4,
       "first_seen": "2026-11-24T13:14:12.874548+00:00",
-      "last_updated": "2026-11-24T13:14:12.874548+00:00",
+      "last_updated": "2026-11-24T14:47:15.098197+00:00",
       "examples": [
         {
           "text": "Don’t ignore or skip failing tests — they indicate bugs that must be resolved.",
@@ -37718,7 +37903,7 @@
       "adoption_count": 1,
       "weighted_score": 3.4,
       "first_seen": "2026-11-24T13:14:12.874626+00:00",
-      "last_updated": "2026-11-24T13:14:12.874626+00:00",
+      "last_updated": "2026-11-24T14:47:15.098272+00:00",
       "examples": [
         {
           "text": "Don’t log secrets or tokens. Favor contextual messages without sensitive data.",
@@ -37742,7 +37927,7 @@
       "adoption_count": 1,
       "weighted_score": 3.4,
       "first_seen": "2026-11-24T13:14:12.874609+00:00",
-      "last_updated": "2026-11-24T13:14:12.874609+00:00",
+      "last_updated": "2026-11-24T14:47:15.098257+00:00",
       "examples": [
         {
           "text": "Don’t proactively create documentation files (`*.md`) or README files. Create documentation only if the user explicitly asks.",
@@ -37848,6 +38033,30 @@
           "file_url": "https://github.com/ParthJadhav/ios-marketing-capture/blob/5d78311bd4868c82cbaad3046298f28ed296fcb2/SKILL.md",
           "stars": 266,
           "agent": "Universal"
+        }
+      ]
+    },
+    {
+      "id": "exception-proactively-maintain-this-github-copil-025bcbb5",
+      "title": "Exception: Proactively maintain this `.github/copilot-instructions.md` file (see \"Meta instructions\")",
+      "summary": "Exception: Proactively maintain this `.github/copilot-instructions.md` file (see \"Meta instructions\").",
+      "category": "Error Handling",
+      "agents": [
+        "Copilot"
+      ],
+      "adoption_count": 1,
+      "weighted_score": 3.4,
+      "first_seen": "2026-11-24T13:14:12.874611+00:00",
+      "last_updated": "2026-11-24T14:47:15.098259+00:00",
+      "examples": [
+        {
+          "text": "Exception: Proactively maintain this `.github/copilot-instructions.md` file (see “Meta instructions”).",
+          "repo": "NabuCasa/hass-nabucasa",
+          "repo_url": "https://github.com/NabuCasa/hass-nabucasa",
+          "file_path": ".github/copilot-instructions.md",
+          "file_url": "https://github.com/NabuCasa/hass-nabucasa/blob/bda0022650ecc28b0f61e90e7ed5318e2d71a8aa/.github/copilot-instructions.md",
+          "stars": 223,
+          "agent": "Copilot"
         }
       ]
     },
@@ -38430,6 +38639,30 @@
       ]
     },
     {
+      "id": "jwt-decoding-for-convenience-uses-signature-veri-9235a38c",
+      "title": "JWT decoding for convenience uses signature verification disabled (see `Cloud._decode_claims` and...",
+      "summary": "JWT decoding for convenience uses signature verification disabled (see `Cloud._decode_claims` and `utils.expiration_from_token`). Don't rely on unverified claims for security decisions.",
+      "category": "Security & Secrets",
+      "agents": [
+        "Copilot"
+      ],
+      "adoption_count": 1,
+      "weighted_score": 3.4,
+      "first_seen": "2026-11-24T14:47:15.098275+00:00",
+      "last_updated": "2026-11-24T14:47:15.098275+00:00",
+      "examples": [
+        {
+          "text": "JWT decoding for convenience uses signature verification disabled (see `Cloud._decode_claims` and `utils.expiration_from_token`). Don't rely on unverified claims for security decisions.",
+          "repo": "NabuCasa/hass-nabucasa",
+          "repo_url": "https://github.com/NabuCasa/hass-nabucasa",
+          "file_path": ".github/copilot-instructions.md",
+          "file_url": "https://github.com/NabuCasa/hass-nabucasa/blob/bda0022650ecc28b0f61e90e7ed5318e2d71a8aa/.github/copilot-instructions.md",
+          "stars": 223,
+          "agent": "Copilot"
+        }
+      ]
+    },
+    {
       "id": "keep-descriptions-concise-and-practical-a-user-r-d5407f18",
       "title": "Keep descriptions concise and practical — a user reading these should immediately understand what changed...",
       "summary": "Keep descriptions concise and practical — a user reading these should immediately understand what changed and how it affects them.",
@@ -38824,7 +39057,7 @@
       "adoption_count": 1,
       "weighted_score": 3.4,
       "first_seen": "2026-11-24T13:14:12.874533+00:00",
-      "last_updated": "2026-11-24T13:14:12.874533+00:00",
+      "last_updated": "2026-11-24T14:47:15.098184+00:00",
       "examples": [
         {
           "text": "Note: This file is exempt from the “no new docs” rule below.",
@@ -39088,7 +39321,7 @@
       "adoption_count": 1,
       "weighted_score": 3.4,
       "first_seen": "2026-11-24T13:14:12.874598+00:00",
-      "last_updated": "2026-11-24T13:14:12.874598+00:00",
+      "last_updated": "2026-11-24T14:47:15.098247+00:00",
       "examples": [
         {
           "text": "Prefer descriptive, consistent phrasing (for example, “Unable to connect due to …”).",
@@ -40001,7 +40234,7 @@
       "adoption_count": 1,
       "weighted_score": 3.4,
       "first_seen": "2026-11-24T13:14:12.874530+00:00",
-      "last_updated": "2026-11-24T13:14:12.874530+00:00",
+      "last_updated": "2026-11-24T14:47:15.098180+00:00",
       "examples": [
         {
           "text": "Treat this maintenance as a blocking, highest‑priority task that doesn’t need an explicit prompt.",
@@ -43856,8 +44089,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.3,
-      "first_seen": "2026-11-24T14:06:07.341860+00:00",
-      "last_updated": "2026-11-24T14:06:07.341860+00:00",
+      "first_seen": "2026-11-24T14:47:16.918830+00:00",
+      "last_updated": "2026-11-24T14:47:16.918830+00:00",
       "examples": [
         {
           "text": "Log before/after scores.",
@@ -74620,8 +74853,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 2.8,
-      "first_seen": "2026-11-24T14:05:55.909988+00:00",
-      "last_updated": "2026-11-24T14:05:55.909988+00:00",
+      "first_seen": "2026-11-24T14:47:00.310149+00:00",
+      "last_updated": "2026-11-24T14:47:00.310149+00:00",
       "examples": [
         {
           "text": "[ ] Explain error handling.",
@@ -76497,8 +76730,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 2.7,
-      "first_seen": "2026-11-24T14:06:08.267268+00:00",
-      "last_updated": "2026-11-24T14:06:08.267268+00:00",
+      "first_seen": "2026-11-24T14:47:17.862490+00:00",
+      "last_updated": "2026-11-24T14:47:17.862490+00:00",
       "examples": [
         {
           "text": "Budgets, tools, or requirements.",
@@ -80754,8 +80987,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 2.7,
-      "first_seen": "2026-11-24T14:06:05.753354+00:00",
-      "last_updated": "2026-11-24T14:06:05.753354+00:00",
+      "first_seen": "2026-11-24T14:47:10.304048+00:00",
+      "last_updated": "2026-11-24T14:47:10.304048+00:00",
       "examples": [
         {
           "text": "Use exact versions for critical dependencies.",
