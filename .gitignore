@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+scraper/.venv/
+
+# Node / Vite
+web/node_modules/
+web/dist/
+*.local
+
+# OS & Editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary test artifacts
+*.tmp.db
+*.tmp.json
