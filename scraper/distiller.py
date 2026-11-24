@@ -275,11 +275,12 @@ def canonicalize_with_llm(
     categories_str = ", ".join(ALL_CATEGORIES)
     prompt = (
         "You are distilling AI coding agent rules into one crisp canonical rule.\n"
+        "Write the canonical title and summary strictly in clear English.\n"
         f"Variations:\n{sample_lines}\n\n"
         f"Choose one category from: {categories_str}.\n"
         "Respond ONLY with valid JSON: "
-        '{"title": "short imperative rule <= 12 words", '
-        '"summary": "1-2 sentence explanation of why and how to apply this rule", '
+        '{"title": "short imperative English rule <= 12 words", '
+        '"summary": "1-2 sentence English explanation of why and how to apply this rule", '
         '"category": "exact category name"}'
     )
 

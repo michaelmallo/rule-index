@@ -10,6 +10,7 @@ from typing import Iterable
 
 from config import ALL_AGENTS, ALL_CATEGORIES
 from distiller import CanonicalRule, RawRuleObservation, RuleExample
+from translator import EnglishNormalizer, is_english
 
 
 SCHEMA_SQL = """
@@ -265,6 +266,79 @@ class RuleDatabase:
                 )
             )
         return rules
+
+    def normalize_existing_records(self, normalizer: EnglishNormalizer) -> dict[str, int]:
+        """Normalize all existing raw_rules, canonical_rules, and rule_examples to English."""
+        stats = {
+            "raw_translated": 0,
+            "raw_removed": 0,
+            "canonical_translated": 0,
+            "canonical_removed": 0,
+            "examples_translated": 0,
+            "examples_removed": 0,
+        }
+
+        with self.conn:
+            # 1. Normalize raw_rules
+            raw_rows = self.conn.execute("SELECT id, text FROM raw_rules").fetchall()
+            for row in raw_rows:
+                text = row["text"]
+                if is_english(text):
+                    continue
+                translated = normalizer.normalize(text)
+                if not translated:
+                    self.conn.execute("DELETE FROM raw_rules WHERE id = ?", (row["id"],))
+                    stats["raw_removed"] += 1
+                    continue
+                try:
+                    self.conn.execute(
+                        "UPDATE raw_rules SET text = ? WHERE id = ?",
+                        (translated, row["id"]),
+                    )
+                    stats["raw_translated"] += 1
+                except sqlite3.IntegrityError:
+                    # Translated rule already exists for this repo+file; drop duplicate
+                    self.conn.execute("DELETE FROM raw_rules WHERE id = ?", (row["id"],))
+                    stats["raw_removed"] += 1
+
+            # 2. Normalize canonical_rules
+            canonical_rows = self.conn.execute(
+                "SELECT id, title, summary FROM canonical_rules"
+            ).fetchall()
+            for row in canonical_rows:
+                title, summary = row["title"], row["summary"]
+                if is_english(title) and is_english(summary):
+                    continue
+                new_title = title if is_english(title) else normalizer.normalize(title)
+                new_summary = summary if is_english(summary) else normalizer.normalize(summary)
+                if not new_title or not new_summary:
+                    self.conn.execute("DELETE FROM canonical_rules WHERE id = ?", (row["id"],))
+                    stats["canonical_removed"] += 1
+                    continue
+                self.conn.execute(
+                    "UPDATE canonical_rules SET title = ?, summary = ? WHERE id = ?",
+                    (new_title.rstrip("."), new_summary, row["id"]),
+                )
+                stats["canonical_translated"] += 1
+
+            # 3. Normalize rule_examples
+            example_rows = self.conn.execute("SELECT id, text FROM rule_examples").fetchall()
+            for row in example_rows:
+                text = row["text"]
+                if is_english(text):
+                    continue
+                translated = normalizer.normalize(text)
+                if not translated:
+                    self.conn.execute("DELETE FROM rule_examples WHERE id = ?", (row["id"],))
+                    stats["examples_removed"] += 1
+                    continue
+                self.conn.execute(
+                    "UPDATE rule_examples SET text = ? WHERE id = ?",
+                    (translated, row["id"]),
+                )
+                stats["examples_translated"] += 1
+
+        return stats
 
     def export_json(self, output_paths: Iterable[Path]) -> dict:
         """Export the canonical rules dataset to one or more JSON files."""
