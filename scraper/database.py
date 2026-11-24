@@ -343,15 +343,22 @@ class RuleDatabase:
     def export_json(self, output_paths: Iterable[Path]) -> dict:
         """Export the canonical rules dataset to one or more JSON files."""
         rules = self.fetch_canonical_rules()
-        repo_count_row = self.conn.execute("SELECT COUNT(*) AS cnt FROM repos").fetchone()
+        repo_count_row = self.conn.execute(
+            """
+            SELECT COUNT(*) AS cnt FROM (
+                SELECT full_name FROM repos
+                UNION
+                SELECT DISTINCT repo FROM rule_examples
+            )
+            """
+        ).fetchone()
         indexed_repos = int(repo_count_row["cnt"]) if repo_count_row else 0
-        max_adoption = max((r.adoption_count for r in rules), default=0)
 
         payload = {
             "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "stats": {
                 "total_rules": len(rules),
-                "total_repos_indexed": max(indexed_repos, max_adoption * 3),
+                "total_repos_indexed": indexed_repos,
                 "agents_covered": ALL_AGENTS,
                 "categories": ALL_CATEGORIES,
             },
