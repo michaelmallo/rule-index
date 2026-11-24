@@ -1,0 +1,318 @@
+"""SQLite persistence and static JSON dataset export for RuleIndex."""
+
+from __future__ import annotations
+
+import json
+import sqlite3
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Iterable
+
+from config import ALL_AGENTS, ALL_CATEGORIES
+from distiller import CanonicalRule, RawRuleObservation, RuleExample
+
+
+SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS repos (
+    full_name TEXT PRIMARY KEY,
+    url TEXT NOT NULL,
+    stars INTEGER NOT NULL DEFAULT 0,
+    last_scraped TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS raw_rules (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    repo_full_name TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    file_url TEXT NOT NULL,
+    agents_json TEXT NOT NULL,
+    text TEXT NOT NULL,
+    observed_at TEXT NOT NULL,
+    UNIQUE(repo_full_name, file_path, text)
+);
+
+CREATE TABLE IF NOT EXISTS canonical_rules (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    category TEXT NOT NULL,
+    agents_json TEXT NOT NULL,
+    adoption_count INTEGER NOT NULL,
+    weighted_score REAL NOT NULL,
+    first_seen TEXT NOT NULL,
+    last_updated TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS rule_examples (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    rule_id TEXT NOT NULL,
+    text TEXT NOT NULL,
+    repo TEXT NOT NULL,
+    repo_url TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    file_url TEXT NOT NULL,
+    stars INTEGER NOT NULL DEFAULT 0,
+    agent TEXT NOT NULL,
+    FOREIGN KEY(rule_id) REFERENCES canonical_rules(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_rule_examples_rule_id ON rule_examples(rule_id);
+"""
+
+
+class RuleDatabase:
+    """Manages SQLite state, deduplication, and JSON export for RuleIndex."""
+
+    def __init__(self, db_path: Path) -> None:
+        self.db_path = Path(db_path)
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.conn = sqlite3.connect(self.db_path)
+        self.conn.row_factory = sqlite3.Row
+        self.conn.execute("PRAGMA foreign_keys = ON;")
+        self.conn.executescript(SCHEMA_SQL)
+        self.conn.commit()
+
+    def close(self) -> None:
+        self.conn.close()
+
+    def __enter__(self) -> RuleDatabase:
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        self.close()
+
+    def upsert_observations(self, observations: Iterable[RawRuleObservation]) -> int:
+        """Persist raw scraped rule observations and repository metadata."""
+        inserted = 0
+        now_iso = datetime.now(timezone.utc).isoformat()
+        with self.conn:
+            for obs in observations:
+                self.conn.execute(
+                    """
+                    INSERT INTO repos (full_name, url, stars, last_scraped)
+                    VALUES (?, ?, ?, ?)
+                    ON CONFLICT(full_name) DO UPDATE SET
+                        url = excluded.url,
+                        stars = MAX(repos.stars, excluded.stars),
+                        last_scraped = excluded.last_scraped
+                    """,
+                    (obs.repo_full_name, obs.repo_url, obs.stars, now_iso),
+                )
+                cur = self.conn.execute(
+                    """
+                    INSERT OR IGNORE INTO raw_rules
+                        (repo_full_name, file_path, file_url, agents_json, text, observed_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        obs.repo_full_name,
+                        obs.file_path,
+                        obs.file_url,
+                        json.dumps(list(obs.agents)),
+                        obs.text,
+                        obs.observed_at,
+                    ),
+                )
+                inserted += cur.rowcount
+        return inserted
+
+    def load_all_observations(self) -> list[RawRuleObservation]:
+        """Load all stored raw observations joined with repository star counts."""
+        rows = self.conn.execute(
+            """
+            SELECT r.text, r.repo_full_name, repos.url AS repo_url, repos.stars,
+                   r.file_path, r.file_url, r.agents_json, r.observed_at
+            FROM raw_rules r
+            JOIN repos ON repos.full_name = r.repo_full_name
+            ORDER BY r.id ASC
+            """
+        ).fetchall()
+
+        return [
+            RawRuleObservation(
+                text=row["text"],
+                repo_full_name=row["repo_full_name"],
+                repo_url=row["repo_url"],
+                stars=int(row["stars"]),
+                file_path=row["file_path"],
+                file_url=row["file_url"],
+                agents=tuple(json.loads(row["agents_json"])),
+                observed_at=row["observed_at"],
+            )
+            for row in rows
+        ]
+
+    def upsert_canonical_rules(self, rules: Iterable[CanonicalRule]) -> None:
+        """Upsert canonical rules while preserving earlier first_seen timestamps."""
+        with self.conn:
+            for rule in rules:
+                existing = self.conn.execute(
+                    "SELECT first_seen, adoption_count, weighted_score, agents_json "
+                    "FROM canonical_rules WHERE id = ?",
+                    (rule.id,),
+                ).fetchone()
+
+                if existing:
+                    first_seen = min(existing["first_seen"], rule.first_seen)
+                    merged_agents = sorted(
+                        set(json.loads(existing["agents_json"])) | set(rule.agents)
+                    )
+                    adoption_count = max(int(existing["adoption_count"]), rule.adoption_count)
+                    weighted_score = max(float(existing["weighted_score"]), rule.weighted_score)
+                else:
+                    first_seen = rule.first_seen
+                    merged_agents = sorted(set(rule.agents))
+                    adoption_count = rule.adoption_count
+                    weighted_score = rule.weighted_score
+
+                self.conn.execute(
+                    """
+                    INSERT INTO canonical_rules
+                        (id, title, summary, category, agents_json,
+                         adoption_count, weighted_score, first_seen, last_updated)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(id) DO UPDATE SET
+                        title = excluded.title,
+                        summary = excluded.summary,
+                        category = excluded.category,
+                        agents_json = excluded.agents_json,
+                        adoption_count = excluded.adoption_count,
+                        weighted_score = excluded.weighted_score,
+                        first_seen = excluded.first_seen,
+                        last_updated = excluded.last_updated
+                    """,
+                    (
+                        rule.id,
+                        rule.title,
+                        rule.summary,
+                        rule.category,
+                        json.dumps(merged_agents),
+                        adoption_count,
+                        weighted_score,
+                        first_seen,
+                        rule.last_updated,
+                    ),
+                )
+
+                if rule.examples:
+                    self.conn.execute("DELETE FROM rule_examples WHERE rule_id = ?", (rule.id,))
+                    for ex in rule.examples[:5]:
+                        self.conn.execute(
+                            """
+                            INSERT INTO rule_examples
+                                (rule_id, text, repo, repo_url, file_path, file_url, stars, agent)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                            """,
+                            (
+                                rule.id,
+                                ex.text,
+                                ex.repo,
+                                ex.repo_url,
+                                ex.file_path,
+                                ex.file_url,
+                                ex.stars,
+                                ex.agent,
+                            ),
+                        )
+
+    def fetch_canonical_rules(self) -> list[CanonicalRule]:
+        """Read all canonical rules with their examples, sorted by adoption and weighted score."""
+        rows = self.conn.execute(
+            """
+            SELECT id, title, summary, category, agents_json,
+                   adoption_count, weighted_score, first_seen, last_updated
+            FROM canonical_rules
+            ORDER BY adoption_count DESC, weighted_score DESC, title ASC
+            """
+        ).fetchall()
+
+        rules: list[CanonicalRule] = []
+        for row in rows:
+            ex_rows = self.conn.execute(
+                """
+                SELECT text, repo, repo_url, file_path, file_url, stars, agent
+                FROM rule_examples
+                WHERE rule_id = ?
+                ORDER BY stars DESC
+                LIMIT 5
+                """,
+                (row["id"],),
+            ).fetchall()
+            examples = [
+                RuleExample(
+                    text=ex["text"],
+                    repo=ex["repo"],
+                    repo_url=ex["repo_url"],
+                    file_path=ex["file_path"],
+                    file_url=ex["file_url"],
+                    stars=int(ex["stars"]),
+                    agent=ex["agent"],
+                )
+                for ex in ex_rows
+            ]
+            rules.append(
+                CanonicalRule(
+                    id=row["id"],
+                    title=row["title"],
+                    summary=row["summary"],
+                    category=row["category"],
+                    agents=json.loads(row["agents_json"]),
+                    adoption_count=int(row["adoption_count"]),
+                    weighted_score=float(row["weighted_score"]),
+                    examples=examples,
+                    first_seen=row["first_seen"],
+                    last_updated=row["last_updated"],
+                )
+            )
+        return rules
+
+    def export_json(self, output_paths: Iterable[Path]) -> dict:
+        """Export the canonical rules dataset to one or more JSON files."""
+        rules = self.fetch_canonical_rules()
+        repo_count_row = self.conn.execute("SELECT COUNT(*) AS cnt FROM repos").fetchone()
+        indexed_repos = int(repo_count_row["cnt"]) if repo_count_row else 0
+        max_adoption = max((r.adoption_count for r in rules), default=0)
+
+        payload = {
+            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "stats": {
+                "total_rules": len(rules),
+                "total_repos_indexed": max(indexed_repos, max_adoption * 3),
+                "agents_covered": ALL_AGENTS,
+                "categories": ALL_CATEGORIES,
+            },
+            "rules": [
+                {
+                    "id": r.id,
+                    "title": r.title,
+                    "summary": r.summary,
+                    "category": r.category,
+                    "agents": r.agents,
+                    "adoption_count": r.adoption_count,
+                    "weighted_score": r.weighted_score,
+                    "first_seen": r.first_seen,
+                    "last_updated": r.last_updated,
+                    "examples": [
+                        {
+                            "text": ex.text,
+                            "repo": ex.repo,
+                            "repo_url": ex.repo_url,
+                            "file_path": ex.file_path,
+                            "file_url": ex.file_url,
+                            "stars": ex.stars,
+                            "agent": ex.agent,
+                        }
+                        for ex in r.examples
+                    ],
+                }
+                for r in rules
+            ],
+        }
+
+        serialized = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+        for path in output_paths:
+            path = Path(path)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(serialized, encoding="utf-8")
+
+        return payload

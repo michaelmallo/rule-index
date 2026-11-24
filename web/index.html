@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="RuleIndex — Daily distilled leaderboard of AI coding agent rules across AGENTS.md, CLAUDE.md, .cursorrules, Copilot, Windsurf, Cline, and Gemini CLI."
+    />
+    <title>RuleIndex — AI Coding Agent Rules Leaderboard</title>
+    <script>
+      // Synchronous FOUC-prevention script before first paint
+      try {
+        var saved = localStorage.getItem('ruleindex:theme') || 'light';
+        var valid = ['light', 'dark', 'solarized', 'terminal'];
+        var theme = valid.indexOf(saved) !== -1 ? saved : 'light';
+        document.documentElement.dataset.theme = theme;
+        var scheme = theme === 'dark' || theme === 'terminal' ? 'dark' : 'light';
+        var meta = document.querySelector('meta[name="color-scheme"]');
+        if (meta) meta.setAttribute('content', scheme);
+      } catch (e) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
