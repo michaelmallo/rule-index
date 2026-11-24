@@ -51,7 +51,7 @@ export function ThemeSwitcher({ theme, onChange }: ThemeSwitcherProps) {
             onClick={() => onChange(opt.id)}
             aria-pressed={active}
             title={opt.label}
-            className="inline-flex min-h-8 items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer"
+            className="inline-flex min-h-7 items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors cursor-pointer sm:min-h-8 sm:px-2.5"
             style={
               active
                 ? {
