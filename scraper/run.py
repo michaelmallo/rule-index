@@ -10,8 +10,12 @@ from pathlib import Path
 from config import (
     DEFAULT_DATA_JSON_PATH,
     DEFAULT_DB_PATH,
+    DEFAULT_MAX_REPOS_PER_TARGET,
+    DEFAULT_PER_PAGE,
     DEFAULT_SIMILARITY_THRESHOLD,
+    DEFAULT_SKIP_WITHIN_EXECUTIONS,
     DEFAULT_WEB_JSON_PATH,
+    LANGUAGE_SHARDS,
 )
 from database import RuleDatabase
 from distiller import RawRuleObservation, SemanticEmbedder, distill_observations
@@ -54,7 +58,10 @@ def run_pipeline(
     mode: str,
     db_path: Path,
     json_outputs: list[Path],
-    max_repos_per_target: int = 30,
+    max_repos_per_target: int = DEFAULT_MAX_REPOS_PER_TARGET,
+    per_page: int = DEFAULT_PER_PAGE,
+    skip_within_executions: int = DEFAULT_SKIP_WITHIN_EXECUTIONS,
+    language_shard: str | None = None,
     similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD,
     use_llm: bool = False,
 ) -> dict:
@@ -105,13 +112,50 @@ def run_pipeline(
                 if any(norm_stats.values()):
                     logger.info("Normalized existing non-English records: %s", norm_stats)
 
-                scraper = GitHubRuleScraper(max_repos_per_target=max_repos_per_target)
-                scraped_files = scraper.scrape_all()
+                execution_num = db.increment_execution_count()
+                selected_shard = (
+                    language_shard
+                    if language_shard is not None
+                    else LANGUAGE_SHARDS[(execution_num - 1) % len(LANGUAGE_SHARDS)]
+                )
+                skip_repos = db.get_recently_scraped_repos(
+                    current_execution=execution_num,
+                    skip_within_executions=skip_within_executions,
+                )
+                star_cache = db.get_cached_repo_stars()
+
+                logger.info(
+                    "Starting live execution #%d (shard=%s, per_page=%d, max_per_target=%d, skipping %d repos scraped within last %d runs)",
+                    execution_num,
+                    selected_shard or "general",
+                    per_page,
+                    max_repos_per_target,
+                    len(skip_repos),
+                    skip_within_executions,
+                )
+
+                scraper = GitHubRuleScraper(
+                    per_page=per_page,
+                    max_repos_per_target=max_repos_per_target,
+                    skip_repos=skip_repos,
+                    initial_star_cache=star_cache,
+                )
+                scraped_files = scraper.scrape_all(language_shard=selected_shard)
                 logger.info("Scraped %d files from GitHub.", len(scraped_files))
 
                 if scraped_files:
+                    # Mark all fetched repos as scraped in this execution so boilerplate-only
+                    # repos aren't repeatedly re-fetched during the skip window.
+                    db.mark_repos_scraped(
+                        ((f.repo_full_name, f.repo_url, f.stars) for f in scraped_files),
+                        execution_number=execution_num,
+                    )
+
                     observations = files_to_observations(scraped_files, normalizer=normalizer)
-                    inserted = db.upsert_observations(observations)
+                    inserted = db.upsert_observations(
+                        observations,
+                        execution_number=execution_num,
+                    )
                     logger.info(
                         "Extracted %d English-normalized directives (%d newly stored).",
                         len(observations),
@@ -175,8 +219,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--max-repos-per-target",
         type=int,
-        default=30,
-        help="Maximum repositories to fetch per target filename in live mode.",
+        default=DEFAULT_MAX_REPOS_PER_TARGET,
+        help=f"Maximum newly fetched repositories per target filename in live mode (default: {DEFAULT_MAX_REPOS_PER_TARGET}).",
+    )
+    parser.add_argument(
+        "--per-page",
+        type=int,
+        default=DEFAULT_PER_PAGE,
+        help=f"GitHub Code Search results per page, up to 100 (default: {DEFAULT_PER_PAGE}).",
+    )
+    parser.add_argument(
+        "--skip-within-executions",
+        type=int,
+        default=DEFAULT_SKIP_WITHIN_EXECUTIONS,
+        help=f"Skip repositories already scraped within the last N executions (default: {DEFAULT_SKIP_WITHIN_EXECUTIONS}).",
+    )
+    parser.add_argument(
+        "--language-shard",
+        type=str,
+        default=None,
+        help="Optional explicit language shard override (defaults to rotating through LANGUAGE_SHARDS each execution).",
     )
     parser.add_argument(
         "--similarity-threshold",
@@ -200,6 +262,9 @@ def main(argv: list[str] | None = None) -> int:
         db_path=args.db,
         json_outputs=json_outputs,
         max_repos_per_target=args.max_repos_per_target,
+        per_page=args.per_page,
+        skip_within_executions=args.skip_within_executions,
+        language_shard=args.language_shard,
         similarity_threshold=args.similarity_threshold,
         use_llm=args.llm_canonicalize,
     )

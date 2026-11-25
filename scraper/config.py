@@ -40,7 +40,39 @@ class TargetFileSpec:
     query: str
     filename_label: str
     agents: tuple[str, ...]
-    max_pages: int = 3
+    max_pages: int = 10
+
+
+# Language ecosystem shards rotated across hourly executions.
+# Uses content terms rather than GitHub's `language:` file-type qualifier because
+# agent rule files (*.md, .cursorrules, etc.) are classified as Markdown/Text.
+# 12 shards = 1 full rotation every 12 hours (2 rotations/day).
+LANGUAGE_SHARDS: tuple[str, ...] = (
+    "",  # General / unsharded baseline
+    "typescript",
+    "python",
+    "javascript",
+    "rust",
+    "golang",
+    "java",
+    "csharp",
+    "cpp",
+    "ruby",
+    "php",
+    "swift",
+)
+
+# GitHub Code Search API max page size
+DEFAULT_PER_PAGE = 100
+
+# Per-target newly fetched file budget per hourly run (~225 new files/hour,
+# staying safely under GitHub Actions' 1,000 REST requests/hour limit).
+DEFAULT_MAX_REPOS_PER_TARGET = 25
+
+# Skip repos scraped within the last N executions.
+# At hourly cadence, N=168 = 7 days (14 full 12-hour shard rotations),
+# maximizing discovery of new repos while revisiting older repos weekly.
+DEFAULT_SKIP_WITHIN_EXECUTIONS = 168
 
 
 TARGET_FILES: tuple[TargetFileSpec, ...] = (

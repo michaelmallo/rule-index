@@ -11,7 +11,7 @@ from typing import Iterator
 
 import requests
 
-from config import TARGET_FILES, TargetFileSpec
+from config import DEFAULT_MAX_REPOS_PER_TARGET, DEFAULT_PER_PAGE, TARGET_FILES, TargetFileSpec
 
 logger = logging.getLogger(__name__)
 
@@ -37,15 +37,19 @@ class GitHubRuleScraper:
     def __init__(
         self,
         token: str | None = None,
-        per_page: int = 30,
-        max_repos_per_target: int = 50,
+        per_page: int = DEFAULT_PER_PAGE,
+        max_repos_per_target: int = DEFAULT_MAX_REPOS_PER_TARGET,
         request_timeout: int = 20,
+        skip_repos: set[str] | None = None,
+        initial_star_cache: dict[str, int] | None = None,
     ) -> None:
         self.token = token or os.getenv("GITHUB_TOKEN")
         self.per_page = min(max(per_page, 1), 100)
         self.max_repos_per_target = max_repos_per_target
         self.request_timeout = request_timeout
-        self._repo_star_cache: dict[str, int] = {}
+        self.skip_repos: set[str] = set(skip_repos or ())
+        self._repo_star_cache: dict[str, int] = dict(initial_star_cache or {})
+        self._last_search_ts = 0.0
 
         self.session = requests.Session()
         headers = {
@@ -156,19 +160,31 @@ class GitHubRuleScraper:
                 return raw_resp.text
         return None
 
-    def search_target(self, target: TargetFileSpec) -> Iterator[ScrapedFile]:
-        """Yield scraped files for a single TargetFileSpec with pagination."""
-        seen_repos: set[str] = set()
+    def search_target(
+        self,
+        target: TargetFileSpec,
+        language_shard: str = "",
+    ) -> Iterator[ScrapedFile]:
+        """Yield scraped files for a single TargetFileSpec + language shard with pagination."""
+        seen_files: set[str] = set()
         fetched = 0
+        skipped_recent = 0
+        query = f"{target.query} {language_shard}".strip()
 
         for page in range(1, target.max_pages + 1):
             if fetched >= self.max_repos_per_target:
                 break
 
+            # Respect GitHub Code Search 10 req/min rate limit proactively
+            elapsed = time.monotonic() - self._last_search_ts
+            if self._last_search_ts > 0 and elapsed < 6.2:
+                time.sleep(6.2 - elapsed)
+
+            self._last_search_ts = time.monotonic()
             resp = self._request_with_backoff(
                 f"{GITHUB_API_BASE}/search/code",
                 params={
-                    "q": target.query,
+                    "q": query,
                     "per_page": self.per_page,
                     "page": page,
                 },
@@ -196,10 +212,14 @@ class GitHubRuleScraper:
                 if not repo_full_name or not file_path:
                     continue
 
-                dedup_key = f"{repo_full_name}:{file_path}"
-                if dedup_key in seen_repos:
+                if repo_full_name in self.skip_repos:
+                    skipped_recent += 1
                     continue
-                seen_repos.add(dedup_key)
+
+                dedup_key = f"{repo_full_name}:{file_path}"
+                if dedup_key in seen_files:
+                    continue
+                seen_files.add(dedup_key)
 
                 content = self._fetch_file_content(repo_full_name, file_path)
                 if not content:
@@ -217,14 +237,23 @@ class GitHubRuleScraper:
                     content=content,
                 )
 
-            # Respect GitHub Code Search secondary rate limit (gentle pause between pages)
-            time.sleep(2.5)
+            if len(items) < self.per_page:
+                break
+
+        if skipped_recent:
+            logger.info(
+                "Skipped %d recently scraped repos for %s (shard=%s)",
+                skipped_recent,
+                target.filename_label,
+                language_shard or "general",
+            )
 
     def scrape_all(
         self,
         targets: tuple[TargetFileSpec, ...] = TARGET_FILES,
+        language_shard: str = "",
     ) -> list[ScrapedFile]:
-        """Run code search across all configured agent rule targets."""
+        """Run code search across all configured agent rule targets for a language shard."""
         if not self.token:
             logger.warning(
                 "GITHUB_TOKEN is not set. GitHub Code Search API requires authentication; "
@@ -232,11 +261,24 @@ class GitHubRuleScraper:
             )
 
         collected: list[ScrapedFile] = []
+        shard_label = language_shard or "general"
         for target in targets:
-            logger.info("Searching GitHub for %s (%s)", target.filename_label, target.query)
+            query = f"{target.query} {language_shard}".strip()
+            logger.info(
+                "Searching GitHub for %s (shard=%s, query=%s, per_page=%d)",
+                target.filename_label,
+                shard_label,
+                query,
+                self.per_page,
+            )
             count = 0
-            for scraped in self.search_target(target):
+            for scraped in self.search_target(target, language_shard=language_shard):
                 collected.append(scraped)
                 count += 1
-            logger.info("Collected %d files for %s", count, target.filename_label)
+            logger.info(
+                "Collected %d files for %s (shard=%s)",
+                count,
+                target.filename_label,
+                shard_label,
+            )
         return collected
