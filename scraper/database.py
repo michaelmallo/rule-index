@@ -14,11 +14,17 @@ from translator import EnglishNormalizer, is_english
 
 
 SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS pipeline_state (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS repos (
     full_name TEXT PRIMARY KEY,
     url TEXT NOT NULL,
     stars INTEGER NOT NULL DEFAULT 0,
-    last_scraped TEXT NOT NULL
+    last_scraped TEXT NOT NULL,
+    last_scraped_execution INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS raw_rules (
@@ -71,6 +77,14 @@ class RuleDatabase:
         self.conn.row_factory = sqlite3.Row
         self.conn.execute("PRAGMA foreign_keys = ON;")
         self.conn.executescript(SCHEMA_SQL)
+        # Migrate pre-existing repos tables that lack last_scraped_execution
+        repo_cols = {
+            row["name"] for row in self.conn.execute("PRAGMA table_info(repos)").fetchall()
+        }
+        if "last_scraped_execution" not in repo_cols:
+            self.conn.execute(
+                "ALTER TABLE repos ADD COLUMN last_scraped_execution INTEGER NOT NULL DEFAULT 0"
+            )
         self.conn.commit()
 
     def close(self) -> None:
@@ -82,7 +96,80 @@ class RuleDatabase:
     def __exit__(self, *_: object) -> None:
         self.close()
 
-    def upsert_observations(self, observations: Iterable[RawRuleObservation]) -> int:
+    def get_execution_count(self) -> int:
+        """Return the current cumulative live execution counter."""
+        row = self.conn.execute(
+            "SELECT value FROM pipeline_state WHERE key = 'execution_count'"
+        ).fetchone()
+        return int(row["value"]) if row else 0
+
+    def increment_execution_count(self) -> int:
+        """Atomically increment and return the cumulative live execution counter."""
+        next_count = self.get_execution_count() + 1
+        with self.conn:
+            self.conn.execute(
+                """
+                INSERT INTO pipeline_state (key, value)
+                VALUES ('execution_count', ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                """,
+                (str(next_count),),
+            )
+        return next_count
+
+    def get_recently_scraped_repos(
+        self,
+        current_execution: int,
+        skip_within_executions: int,
+    ) -> set[str]:
+        """Return repo full_names scraped within the last `skip_within_executions` runs."""
+        if skip_within_executions <= 0:
+            return set()
+        cutoff = current_execution - skip_within_executions
+        rows = self.conn.execute(
+            """
+            SELECT full_name FROM repos
+            WHERE last_scraped_execution > 0 AND last_scraped_execution > ?
+            """,
+            (cutoff,),
+        ).fetchall()
+        return {row["full_name"] for row in rows}
+
+    def get_cached_repo_stars(self) -> dict[str, int]:
+        """Return cached star counts for previously scraped repositories."""
+        rows = self.conn.execute("SELECT full_name, stars FROM repos").fetchall()
+        return {row["full_name"]: int(row["stars"]) for row in rows}
+
+    def mark_repos_scraped(
+        self,
+        repos: Iterable[tuple[str, str, int]],
+        execution_number: int,
+    ) -> None:
+        """Record that a set of (full_name, url, stars) repos were checked in `execution_number`."""
+        now_iso = datetime.now(timezone.utc).isoformat()
+        with self.conn:
+            for full_name, url, stars in repos:
+                self.conn.execute(
+                    """
+                    INSERT INTO repos (full_name, url, stars, last_scraped, last_scraped_execution)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(full_name) DO UPDATE SET
+                        url = excluded.url,
+                        stars = MAX(repos.stars, excluded.stars),
+                        last_scraped = excluded.last_scraped,
+                        last_scraped_execution = MAX(
+                            repos.last_scraped_execution,
+                            excluded.last_scraped_execution
+                        )
+                    """,
+                    (full_name, url, stars, now_iso, execution_number),
+                )
+
+    def upsert_observations(
+        self,
+        observations: Iterable[RawRuleObservation],
+        execution_number: int = 0,
+    ) -> int:
         """Persist raw scraped rule observations and repository metadata."""
         inserted = 0
         now_iso = datetime.now(timezone.utc).isoformat()
@@ -90,14 +177,18 @@ class RuleDatabase:
             for obs in observations:
                 self.conn.execute(
                     """
-                    INSERT INTO repos (full_name, url, stars, last_scraped)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO repos (full_name, url, stars, last_scraped, last_scraped_execution)
+                    VALUES (?, ?, ?, ?, ?)
                     ON CONFLICT(full_name) DO UPDATE SET
                         url = excluded.url,
                         stars = MAX(repos.stars, excluded.stars),
-                        last_scraped = excluded.last_scraped
+                        last_scraped = excluded.last_scraped,
+                        last_scraped_execution = MAX(
+                            repos.last_scraped_execution,
+                            excluded.last_scraped_execution
+                        )
                     """,
-                    (obs.repo_full_name, obs.repo_url, obs.stars, now_iso),
+                    (obs.repo_full_name, obs.repo_url, obs.stars, now_iso, execution_number),
                 )
                 cur = self.conn.execute(
                     """
