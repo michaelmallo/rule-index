@@ -91,12 +91,12 @@ export function FilterPanel({
         <legend className="mb-1.5 text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
           Target Agent / System
         </legend>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5">
           <button
             type="button"
             onClick={onClearAgents}
             aria-pressed={filters.agents.length === 0}
-            className="flex min-h-9 items-center justify-between rounded-lg px-2.5 py-1.5 text-left text-sm transition-colors cursor-pointer"
+            className="flex min-h-7 items-center justify-between rounded-lg px-2.5 py-1 text-left text-sm transition-colors cursor-pointer"
             style={
               filters.agents.length === 0
                 ? {
@@ -116,7 +116,7 @@ export function FilterPanel({
             return (
               <label
                 key={agent}
-                className="flex min-h-9 cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-sm transition-colors"
+                className="flex min-h-7 cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-1 text-sm transition-colors"
                 style={
                   selected
                     ? {
@@ -150,14 +150,14 @@ export function FilterPanel({
         <legend className="mb-1.5 text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
           Rule Category
         </legend>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5">
           {ALL_CATEGORIES.map((category) => {
             const selected = filters.categories.includes(category);
             const count = categoryCounts[category] ?? 0;
             return (
               <label
                 key={category}
-                className="flex min-h-9 cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-sm transition-colors"
+                className="flex min-h-7 cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-1 text-sm transition-colors"
                 style={
                   selected
                     ? {
