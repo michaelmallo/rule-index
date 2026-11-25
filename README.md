@@ -27,7 +27,7 @@ Software teams increasingly configure AI coding assistants using instruction fil
 
 ## Quick How-To for Visitors
 
-1. **Browse & Sort the Leaderboard**: Open the RuleIndex web page to view ranked rules inside the scrollable leaderboard. Switch between **Most Repos**, **Star-Weighted**, and **Trending / Recent** using the sort bar above the list.
+1. **Browse & Sort the Leaderboard**: Open the [RuleIndex web page](https://michaelmallo.github.io/rule-index/) to view ranked rules inside the scrollable leaderboard. Switch between **Most Repos**, **Star-Weighted**, and **Trending / Recent** using the sort bar above the list.
 2. **Search & Filter**:
    - Type any keyword (such as `secrets`, `TypeScript`, or `pytest`) into the search bar for instant filtering.
    - Use the **Filters** sidebar (or tap **Filters** below the title on mobile) to narrow results by **Minimum Adoption** (`5+`, `25+`, `100+` repos), **Target Agent / System**, or **Rule Category**.
