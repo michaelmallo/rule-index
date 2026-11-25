@@ -14,8 +14,7 @@ import {
   Star,
   X,
 } from 'lucide-react';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FilterPanel } from './components/FilterPanel';
 import { RuleDetailDialog } from './components/RuleDetailDialog';
 import { ShareDialog } from './components/ShareDialog';
@@ -72,8 +71,6 @@ export function App() {
   const [shareOpen, setShareOpen] = useState(false);
 
   const mobileDrawerRef = useRef<HTMLDialogElement>(null);
-  const rulesListRef = useRef<HTMLOListElement>(null);
-  const [tenRulesHeight, setTenRulesHeight] = useState<number | null>(null);
 
   // Hydrate filters from shared URL query params if present
   useEffect(() => {
@@ -353,33 +350,6 @@ export function App() {
       return dataset.generated_at;
     }
   }, [dataset?.generated_at]);
-
-  // Measure the rendered height of the first 10 rules so the scrollbox displays at least 10 rules
-  // or fits the viewport height, whichever is larger.
-  useLayoutEffect(() => {
-    const listEl = rulesListRef.current;
-    if (!listEl || filteredRules.length <= 10) {
-      setTenRulesHeight(null);
-      return;
-    }
-
-    const measure = () => {
-      const items = listEl.children;
-      if (items.length < 10) return;
-      const firstRect = items[0].getBoundingClientRect();
-      const tenthRect = items[9].getBoundingClientRect();
-      const span = Math.ceil(tenthRect.bottom - firstRect.top + 32);
-      if (span > 0) {
-        setTenRulesHeight(span);
-      }
-    };
-
-    measure();
-    if (typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(measure);
-    ro.observe(listEl);
-    return () => ro.disconnect();
-  }, [filteredRules]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -731,37 +701,23 @@ export function App() {
                 </button>
               </div>
             ) : (
-              <div
-                className="rules-scrollbox rounded-2xl border p-2 sm:p-3.5"
-                data-fits-all={filteredRules.length <= 10 ? 'true' : 'false'}
-                tabIndex={0}
-                aria-label={`Ranked AI coding agent rules (${filteredRules.length} total)`}
-                style={
-                  {
-                    backgroundColor: 'var(--bg-subtle)',
-                    borderColor: 'var(--border-subtle)',
-                    ...(tenRulesHeight !== null ? { '--ten-rules-height': `${tenRulesHeight}px` } : {}),
-                  } as CSSProperties
-                }
+              <ol
+                className="flex flex-col gap-2 sm:gap-3"
+                aria-label="Ranked AI coding agent rules"
               >
-                <ol
-                  ref={rulesListRef}
-                  className="flex flex-col gap-2 sm:gap-3"
-                  aria-label="Ranked AI coding agent rules"
-                >
-                  {filteredRules.map((rule, index) => {
-                    const rank = index + 1;
-                    const isCopied = copiedId === rule.id;
+                {filteredRules.map((rule, index) => {
+                  const rank = index + 1;
+                  const isCopied = copiedId === rule.id;
 
-                    return (
-                      <li
-                        key={rule.id}
-                        className="rules-scrollbox-item rounded-xl border p-3 transition-colors sm:rounded-2xl sm:p-5"
-                        style={{
-                          backgroundColor: 'var(--bg-surface)',
-                          borderColor: 'var(--border-subtle)',
-                        }}
-                      >
+                  return (
+                    <li
+                      key={rule.id}
+                      className="rounded-xl border p-3 transition-colors sm:rounded-2xl sm:p-5"
+                      style={{
+                        backgroundColor: 'var(--bg-surface)',
+                        borderColor: 'var(--border-subtle)',
+                      }}
+                    >
                       <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
                         {/* Rank + Main Rule Info */}
                         <div className="flex items-start gap-2.5 min-w-0 flex-1 sm:gap-3.5">
@@ -889,9 +845,8 @@ export function App() {
                       </div>
                     </li>
                   );
-                  })}
-                </ol>
-              </div>
+                })}
+              </ol>
             )}
           </div>
         </div>

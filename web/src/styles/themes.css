@@ -21,8 +21,6 @@
   --rank-bg: #0f172a;
   --rank-text: #ffffff;
   --focus-ring: #2563eb;
-  --scrollbar-thumb: #64748b;
-  --scrollbar-track: #e2e8f0;
   --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
@@ -53,8 +51,6 @@
   --rank-bg: #2563eb;
   --rank-text: #ffffff;
   --focus-ring: #60a5fa;
-  --scrollbar-thumb: #64748b;
-  --scrollbar-track: #1e293b;
 }
 
 :root[data-theme="solarized"] {
@@ -76,8 +72,6 @@
   --rank-bg: #073642;
   --rank-text: #fdf6e3;
   --focus-ring: #268bd2;
-  --scrollbar-thumb: #586e75;
-  --scrollbar-track: #eee8d5;
 }
 
 :root[data-theme="terminal"] {
@@ -99,8 +93,6 @@
   --rank-bg: #22c55e;
   --rank-text: #041004;
   --focus-ring: #4ade80;
-  --scrollbar-thumb: #34d399;
-  --scrollbar-track: #0f2915;
   --font-ui: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -218,113 +210,5 @@ dialog.mobile-filter-dialog[open] {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-/* Ranked Rules Scrollbox: fits screen height or at least 10 rules, whichever is larger */
-.rules-scrollbox {
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  container-type: scroll-state;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-  scrollbar-width: thin;
-  /* Default height fits screen height or measured 10-rule height, whichever is larger */
-  height: max(calc(100dvh - 13rem), var(--ten-rules-height, 118rem));
-}
-
-.rules-scrollbox[data-fits-all="true"] {
-  height: auto;
-  min-height: calc(100dvh - 13rem);
-}
-
-/* Smooth 60fps scrolling even with thousands of ranked rules */
-.rules-scrollbox-item {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 184px;
-}
-
-/* Scrollability shadow affordance hints via scroll-state container queries */
-.rules-scrollbox::before,
-.rules-scrollbox::after {
-  content: "";
-  display: block;
-  position: sticky;
-  block-size: 0.75rem;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.rules-scrollbox::before {
-  inset-block-start: 0;
-  margin-block-end: -0.75rem;
-  background: radial-gradient(farthest-side at 50% 0, rgb(0 0 0 / 0.18), transparent);
-}
-
-.rules-scrollbox::after {
-  inset-block-end: 0;
-  margin-block-start: -0.75rem;
-  background: radial-gradient(farthest-side at 50% 100%, rgb(0 0 0 / 0.18), transparent);
-}
-
-@container scroll-state(scrollable: block-start) {
-  .rules-scrollbox::before {
-    opacity: 1;
-  }
-}
-
-@container scroll-state(scrollable: block-end) {
-  .rules-scrollbox::after {
-    opacity: 1;
-  }
-}
-
-/* Fallback for browsers without container-type: scroll-state */
-@supports not (container-type: scroll-state) {
-  @supports (animation-timeline: scroll()) {
-    .rules-scrollbox::before,
-    .rules-scrollbox::after {
-      animation: rule-scroll-shadow linear both;
-      animation-timeline: scroll();
-    }
-
-    .rules-scrollbox::before {
-      animation-range: 0 2rem;
-    }
-
-    .rules-scrollbox::after {
-      animation-direction: reverse;
-      animation-range: calc(100% - 2rem) 100%;
-    }
-  }
-}
-
-@keyframes rule-scroll-shadow {
-  to {
-    opacity: 1;
-  }
-}
-
-/* Legacy WebKit scrollbar fallback gated behind @supports not (scrollbar-color: auto) */
-@supports not (scrollbar-color: auto) {
-  .rules-scrollbox {
-    scrollbar-width: auto;
-  }
-
-  .rules-scrollbox::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-
-  .rules-scrollbox::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: 9999px;
-  }
-
-  .rules-scrollbox::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-  }
 }
 
