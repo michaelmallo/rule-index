@@ -479,7 +479,7 @@ export function App() {
             <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Canonical Rules
             </span>
-            <span className="text-base font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-xs font-semibold tabular-nums sm:text-base" style={{ color: 'var(--text-primary)' }}>
               {dataset ? dataset.stats.total_rules.toLocaleString() : '—'}
             </span>
           </div>
@@ -487,7 +487,7 @@ export function App() {
             <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Repos Indexed
             </span>
-            <span className="text-base font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-xs font-semibold tabular-nums sm:text-base" style={{ color: 'var(--text-primary)' }}>
               {dataset ? dataset.stats.total_repos_indexed.toLocaleString() : '—'}
             </span>
           </div>
@@ -495,7 +495,7 @@ export function App() {
             <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Agent Systems
             </span>
-            <span className="text-base font-bold tabular-nums sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-xs font-semibold tabular-nums sm:text-base" style={{ color: 'var(--text-primary)' }}>
               {ALL_AGENTS.length}
             </span>
           </div>
