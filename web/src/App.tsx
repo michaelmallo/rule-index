@@ -439,41 +439,33 @@ export function App() {
         {/* Compact Hero Stats Strip */}
         <section
           aria-label="Dataset summary"
-          className="mb-3 grid grid-cols-2 gap-2.5 rounded-2xl border p-3 sm:mb-4 sm:grid-cols-4 sm:gap-4 sm:p-4"
+          className="mb-3 grid grid-cols-[1fr_1fr_1.45fr] gap-2 rounded-2xl border px-2.5 py-2.5 sm:mb-4 sm:grid-cols-3 sm:gap-4 sm:p-4"
           style={{
             backgroundColor: 'var(--bg-surface)',
             borderColor: 'var(--border-subtle)',
           }}
         >
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <span className="truncate text-[10px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Canonical Rules
             </span>
-            <span className="text-xs font-semibold tabular-nums sm:text-base" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-[11px] font-semibold tabular-nums sm:text-base" style={{ color: 'var(--text-primary)' }}>
               {dataset ? dataset.stats.total_rules.toLocaleString() : '—'}
             </span>
           </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <span className="truncate text-[10px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Repos Indexed
             </span>
-            <span className="text-xs font-semibold tabular-nums sm:text-base" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-[11px] font-semibold tabular-nums sm:text-base" style={{ color: 'var(--text-primary)' }}>
               {dataset ? dataset.stats.total_repos_indexed.toLocaleString() : '—'}
             </span>
           </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
-              Agent Systems
-            </span>
-            <span className="text-xs font-semibold tabular-nums sm:text-base" style={{ color: 'var(--text-primary)' }}>
-              {ALL_AGENTS.length}
-            </span>
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[11px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <span className="truncate text-[10px] font-medium sm:text-xs" style={{ color: 'var(--text-muted)' }}>
               Last Updated
             </span>
-            <span className="text-xs font-semibold sm:text-base" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-[11px] font-semibold leading-tight sm:text-base" style={{ color: 'var(--text-primary)' }}>
               {updatedLabel}
             </span>
           </div>
