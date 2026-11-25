@@ -212,3 +212,146 @@ dialog.mobile-filter-dialog[open] {
   border: 0;
 }
 
+/* Help documentation Markdown prose styling */
+.help-prose {
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.help-prose h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0 0 1rem;
+  color: var(--text-primary);
+}
+
+.help-prose h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 1.75rem 0 0.75rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.help-prose h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.35rem 0 0.5rem;
+  color: var(--text-primary);
+}
+
+.help-prose p {
+  margin: 0 0 0.9rem;
+  color: var(--text-secondary);
+}
+
+.help-prose strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.help-prose a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.help-prose a:hover {
+  color: var(--accent-hover);
+}
+
+.help-prose ul,
+.help-prose ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.help-prose ul {
+  list-style-type: disc;
+}
+
+.help-prose ol {
+  list-style-type: decimal;
+}
+
+.help-prose li {
+  margin: 0.3rem 0;
+}
+
+.help-prose hr {
+  border: 0;
+  border-top: 1px solid var(--border-subtle);
+  margin: 1.5rem 0;
+}
+
+.help-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.35rem;
+}
+
+.help-prose pre {
+  margin: 0 0 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+.help-prose pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+.help-prose blockquote {
+  margin: 0 0 1rem;
+  padding: 0.65rem 1rem;
+  border-left: 3px solid var(--accent);
+  background-color: var(--bg-subtle);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.help-prose blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.help-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  display: block;
+  overflow-x: auto;
+}
+
+.help-prose th,
+.help-prose td {
+  border: 1px solid var(--border-subtle);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.help-prose th {
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.help-prose td {
+  color: var(--text-secondary);
+}
+

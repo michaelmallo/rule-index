@@ -1,6 +1,7 @@
 import {
   ArrowUpDown,
   Check,
+  CircleHelp,
   Copy,
   Flame,
   GitBranch,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FilterPanel } from './components/FilterPanel';
+import { HelpPage } from './components/HelpPage';
 import { RuleDetailDialog } from './components/RuleDetailDialog';
 import { ShareDialog } from './components/ShareDialog';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
@@ -69,8 +71,30 @@ export function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [helpDocId, setHelpDocId] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('help');
+  });
 
   const mobileDrawerRef = useRef<HTMLDialogElement>(null);
+
+  // Keep help view synced with browser back/forward navigation
+  useEffect(() => {
+    const onPopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      setHelpDocId(params.get('help'));
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const navigateHelpDoc = useCallback((nextDocId: string) => {
+    const url = new URL(window.location.href);
+    url.search = `?help=${encodeURIComponent(nextDocId)}`;
+    url.hash = '';
+    window.history.pushState({}, '', url.toString());
+    setHelpDocId(nextDocId);
+  }, []);
 
   // Hydrate filters from shared URL query params if present
   useEffect(() => {
@@ -351,6 +375,17 @@ export function App() {
     }
   }, [dataset?.generated_at]);
 
+  if (helpDocId !== null) {
+    return (
+      <HelpPage
+        docId={helpDocId}
+        theme={theme}
+        onChangeTheme={setTheme}
+        onNavigateDoc={navigateHelpDoc}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Sticky Top Header */}
@@ -400,8 +435,23 @@ export function App() {
               </div>
             </div>
 
-            <div className="flex shrink-0 items-center">
+            <div className="flex shrink-0 items-center gap-1.5">
               <ThemeSwitcher theme={theme} onChange={setTheme} />
+              <a
+                href={`${import.meta.env.BASE_URL}?help=overview`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open Help"
+                title="Help & Documentation"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border transition-colors sm:h-9 sm:w-9"
+                style={{
+                  backgroundColor: 'var(--bg-subtle)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                <CircleHelp className="h-4 w-4" aria-hidden="true" />
+              </a>
             </div>
           </div>
 
