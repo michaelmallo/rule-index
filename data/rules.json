@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-25T08:11:51Z",
+  "generated_at": "2026-11-25T12:21:59Z",
   "stats": {
     "total_rules": 4450,
-    "total_repos_indexed": 264,
+    "total_repos_indexed": 278,
     "agents_covered": [
       "Universal",
       "Claude",
@@ -2595,6 +2595,48 @@
       ]
     },
     {
+      "id": "makes-import-statements-more-maintainable-4f73a067",
+      "title": "Makes import statements more maintainable",
+      "summary": "Makes import statements more maintainable.",
+      "category": "Code Style & Architecture",
+      "agents": [
+        "Windsurf"
+      ],
+      "adoption_count": 3,
+      "weighted_score": 12.1,
+      "first_seen": "2026-11-25T12:21:14.678236+00:00",
+      "last_updated": "2026-11-25T12:21:16.692196+00:00",
+      "examples": [
+        {
+          "text": "Makes import statements more maintainable.",
+          "repo": "tmux-python/tmuxp",
+          "repo_url": "https://github.com/tmux-python/tmuxp",
+          "file_path": ".windsurfrules",
+          "file_url": "https://github.com/tmux-python/tmuxp/blob/adf13b7c0f5e9a64e334ee21b58e3c2d69cfe7f2/.windsurfrules",
+          "stars": 4601,
+          "agent": "Windsurf"
+        },
+        {
+          "text": "Makes import statements more maintainable.",
+          "repo": "tmux-python/libtmux",
+          "repo_url": "https://github.com/tmux-python/libtmux",
+          "file_path": ".windsurfrules",
+          "file_url": "https://github.com/tmux-python/libtmux/blob/d2a146c9a045437b92013d65943b7ac70013fa24/.windsurfrules",
+          "stars": 1218,
+          "agent": "Windsurf"
+        },
+        {
+          "text": "Makes import statements more maintainable.",
+          "repo": "vcs-python/vcspull",
+          "repo_url": "https://github.com/vcs-python/vcspull",
+          "file_path": ".windsurfrules",
+          "file_url": "https://github.com/vcs-python/vcspull/blob/6f89352e7a1a947c3dae25d7c65d116be3b8e174/.windsurfrules",
+          "stars": 214,
+          "agent": "Windsurf"
+        }
+      ]
+    },
+    {
       "id": "prefer-namespace-imports-over-importing-specific-86359276",
       "title": "Prefer namespace imports over importing specific symbols",
       "summary": "Prefer namespace imports over importing specific symbols.",
@@ -3379,51 +3421,6 @@
       ]
     },
     {
-      "id": "if-you-get-lint-errors-d97e8a7d",
-      "title": "If you get lint errors:",
-      "summary": "If you get lint errors:.",
-      "category": "Testing & Verification",
-      "agents": [
-        "Claude",
-        "Codex",
-        "Cursor",
-        "Universal"
-      ],
-      "adoption_count": 3,
-      "weighted_score": 10.3,
-      "first_seen": "2026-11-24T13:14:12.656568+00:00",
-      "last_updated": "2026-11-25T08:10:42.957147+00:00",
-      "examples": [
-        {
-          "text": "If you get lint errors:.",
-          "repo": "kubernetes-sigs/cluster-api-provider-openstack",
-          "repo_url": "https://github.com/kubernetes-sigs/cluster-api-provider-openstack",
-          "file_path": "AGENTS.md",
-          "file_url": "https://github.com/kubernetes-sigs/cluster-api-provider-openstack/blob/9357da198c6932b85101d03cf581b7fe167050cf/AGENTS.md",
-          "stars": 374,
-          "agent": "Universal"
-        },
-        {
-          "text": "Don't introduce new lint/type errors.",
-          "repo": "haddocking/haddock3",
-          "repo_url": "https://github.com/haddocking/haddock3",
-          "file_path": "CLAUDE.md",
-          "file_url": "https://github.com/haddocking/haddock3/blob/826c3f91b55eac60ed601a8f22f7e1baef3de3d5/CLAUDE.md",
-          "stars": 283,
-          "agent": "Claude"
-        },
-        {
-          "text": "Don't worry about linting errors. I have automatic linting tools.",
-          "repo": "ericmjl/llamabot",
-          "repo_url": "https://github.com/ericmjl/llamabot",
-          "file_path": ".cursorrules",
-          "file_url": "https://github.com/ericmjl/llamabot/blob/37627fbdb6671f1aa77356370f6241dfbf518824/.cursorrules",
-          "stars": 183,
-          "agent": "Cursor"
-        }
-      ]
-    },
-    {
       "id": "use-tailwind-css-for-styling-c03a1b0e",
       "title": "Use Tailwind CSS for styling",
       "summary": "Use Tailwind CSS for styling.",
@@ -3766,49 +3763,6 @@
           "repo_url": "https://github.com/KlausLeon/TestLeaf_PlaywrightAutomationTraining",
           "file_path": ".GITHUB/copilot-instructions.md",
           "file_url": "https://github.com/KlausLeon/TestLeaf_PlaywrightAutomationTraining/blob/b06998873a92051ec725e22f2031ac7b13bdb096/.GITHUB/copilot-instructions.md",
-          "stars": 0,
-          "agent": "Copilot"
-        }
-      ]
-    },
-    {
-      "id": "never-use-inline-styles-d97e9781",
-      "title": "Never use inline styles",
-      "summary": "Never use inline styles.",
-      "category": "Code Style & Architecture",
-      "agents": [
-        "Copilot",
-        "Cursor"
-      ],
-      "adoption_count": 3,
-      "weighted_score": 5.0,
-      "first_seen": "2026-11-24T13:14:12.753548+00:00",
-      "last_updated": "2026-11-25T08:11:03.387411+00:00",
-      "examples": [
-        {
-          "text": "Generally avoid inline styles unless necessary.",
-          "repo": "vincanger/envelope-budgeting-test",
-          "repo_url": "https://github.com/vincanger/envelope-budgeting-test",
-          "file_path": ".cursorrules",
-          "file_url": "https://github.com/vincanger/envelope-budgeting-test/blob/458debd8cccd8115dcfd73da317fdb94aa90f572/.cursorrules",
-          "stars": 102,
-          "agent": "Cursor"
-        },
-        {
-          "text": "Never use inline styles.",
-          "repo": "KevinHaseDev/Portfolio",
-          "repo_url": "https://github.com/KevinHaseDev/Portfolio",
-          "file_path": ".Github/copilot-instructions.md",
-          "file_url": "https://github.com/KevinHaseDev/Portfolio/blob/7967141ff4f570d9be623f7f0499179e179a02b2/.Github/copilot-instructions.md",
-          "stars": 0,
-          "agent": "Copilot"
-        },
-        {
-          "text": "Never use inline styles.",
-          "repo": "Younes-Darabi/join",
-          "repo_url": "https://github.com/Younes-Darabi/join",
-          "file_path": ".Github/copilot-instructions.md",
-          "file_url": "https://github.com/Younes-Darabi/join/blob/aa4ff6b41a3219cbc6fdb28eb12cccb789f146c6/.Github/copilot-instructions.md",
           "stars": 0,
           "agent": "Copilot"
         }
@@ -4390,17 +4344,8 @@
       "adoption_count": 2,
       "weighted_score": 8.1,
       "first_seen": "2026-11-24T13:14:12.619575+00:00",
-      "last_updated": "2026-11-24T13:14:12.860132+00:00",
+      "last_updated": "2026-11-24T13:14:12.619575+00:00",
       "examples": [
-        {
-          "text": "DO NOT attempt to fix the linting configuration unless specifically asked to address linting issues.",
-          "repo": "pulumi/kubespy",
-          "repo_url": "https://github.com/pulumi/kubespy",
-          "file_path": ".github/copilot-instructions.md",
-          "file_url": "https://github.com/pulumi/kubespy/blob/d1e593dd7ec5abf0e06fcb8c936186e9bc9d5d51/.github/copilot-instructions.md",
-          "stars": 3089,
-          "agent": "Copilot"
-        },
         {
           "text": "Don't disable linters without good reason - fix the underlying issue.",
           "repo": "kubernetes-sigs/cluster-api-provider-openstack",
@@ -5849,6 +5794,40 @@
       ]
     },
     {
+      "id": "write-simple-clear-code-1d020044",
+      "title": "Write Simple, Clear Code",
+      "summary": "Write Simple, Clear Code.",
+      "category": "Communication & Planning",
+      "agents": [
+        "Gemini",
+        "Windsurf"
+      ],
+      "adoption_count": 2,
+      "weighted_score": 7.0,
+      "first_seen": "2026-11-24T15:15:32.669314+00:00",
+      "last_updated": "2026-11-25T12:21:15.495000+00:00",
+      "examples": [
+        {
+          "text": "Write Simple, Clear Code.",
+          "repo": "quantalogic/quantalogic",
+          "repo_url": "https://github.com/quantalogic/quantalogic",
+          "file_path": ".windsurfrules",
+          "file_url": "https://github.com/quantalogic/quantalogic/blob/bdcc7f267353b64965e7a3aa6b1c9bd5469df1ea/.windsurfrules",
+          "stars": 471,
+          "agent": "Windsurf"
+        },
+        {
+          "text": "Write Clear and Concise Code: The code should be easy to read and understand.",
+          "repo": "LeonMusCoden/LetterFeed",
+          "repo_url": "https://github.com/LeonMusCoden/LetterFeed",
+          "file_path": "GEMINI.md",
+          "file_url": "https://github.com/LeonMusCoden/LetterFeed/blob/454c27ba6c9d2f4fd624cc888e46769f541602c0/GEMINI.md",
+          "stars": 213,
+          "agent": "Gemini"
+        }
+      ]
+    },
+    {
       "id": "yarn-eslint-packages-linting-9f1d90c8",
       "title": "`yarn eslint packages` - Linting",
       "summary": "`yarn eslint packages` - Linting.",
@@ -6965,6 +6944,40 @@
           "file_url": "https://github.com/makerkit/react-native-expo-turbo-saas-kit/blob/74a9b575a8f1e603f5400614e1f22fe809221cfa/.windsurfrules",
           "stars": 137,
           "agent": "Windsurf"
+        }
+      ]
+    },
+    {
+      "id": "for-synchronous-operations-within-async-tools-us-2c738e2d",
+      "title": "For synchronous operations within async tools, use `asyncio.to_thread`",
+      "summary": "For synchronous operations within async tools, use `asyncio.to_thread`.",
+      "category": "Testing & Verification",
+      "agents": [
+        "Cursor",
+        "Gemini"
+      ],
+      "adoption_count": 2,
+      "weighted_score": 6.5,
+      "first_seen": "2026-11-24T13:14:12.757828+00:00",
+      "last_updated": "2026-11-24T15:15:32.033260+00:00",
+      "examples": [
+        {
+          "text": "Use `asyncio.gather()` for parallel operations.",
+          "repo": "enuno/unifi-mcp-server",
+          "repo_url": "https://github.com/enuno/unifi-mcp-server",
+          "file_path": "GEMINI.md",
+          "file_url": "https://github.com/enuno/unifi-mcp-server/blob/260530f0da768497dae86451ca550ce9b312bdf4/GEMINI.md",
+          "stars": 384,
+          "agent": "Gemini"
+        },
+        {
+          "text": "For synchronous operations within async tools, use `asyncio.to_thread`.",
+          "repo": "VRSEN/agency-voice-interface",
+          "repo_url": "https://github.com/VRSEN/agency-voice-interface",
+          "file_path": ".cursorrules",
+          "file_url": "https://github.com/VRSEN/agency-voice-interface/blob/2d9d39ce02d9cb9628e8de79b3543fe05885ad42/.cursorrules",
+          "stars": 83,
+          "agent": "Cursor"
         }
       ]
     },
@@ -8288,7 +8301,7 @@
       "adoption_count": 2,
       "weighted_score": 5.7,
       "first_seen": "2026-11-24T13:14:12.694201+00:00",
-      "last_updated": "2026-11-25T08:10:47.051754+00:00",
+      "last_updated": "2026-11-25T12:21:04.131901+00:00",
       "examples": [
         {
           "text": "Run single test file:.",
@@ -13572,8 +13585,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 4.4,
-      "first_seen": "2026-11-25T08:11:06.338255+00:00",
-      "last_updated": "2026-11-25T08:11:06.338255+00:00",
+      "first_seen": "2026-11-25T12:21:21.559702+00:00",
+      "last_updated": "2026-11-25T12:21:21.559702+00:00",
       "examples": [
         {
           "text": "Auto-fix Lint Issues: `dart fix --apply`.",
@@ -18155,8 +18168,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 4.2,
-      "first_seen": "2026-11-25T08:10:53.442689+00:00",
-      "last_updated": "2026-11-25T08:10:53.442689+00:00",
+      "first_seen": "2026-11-25T12:21:09.546156+00:00",
+      "last_updated": "2026-11-25T12:21:09.546156+00:00",
       "examples": [
         {
           "text": "Custom validation rules use snake_case.",
@@ -24530,30 +24543,6 @@
       ]
     },
     {
-      "id": "original-task-statement-e0de7f52",
-      "title": "Original task statement",
-      "summary": "Original task statement.",
-      "category": "Communication & Planning",
-      "agents": [
-        "Universal"
-      ],
-      "adoption_count": 1,
-      "weighted_score": 3.9,
-      "first_seen": "2026-11-25T08:11:12.473858+00:00",
-      "last_updated": "2026-11-25T08:11:12.473858+00:00",
-      "examples": [
-        {
-          "text": "Original task statement.",
-          "repo": "DenisSergeevitch/repo-task-proof-loop",
-          "repo_url": "https://github.com/DenisSergeevitch/repo-task-proof-loop",
-          "file_path": "SKILL.md",
-          "file_url": "https://github.com/DenisSergeevitch/repo-task-proof-loop/blob/853622144588798dc1b3babc81ed9499328321bf/SKILL.md",
-          "stars": 726,
-          "agent": "Universal"
-        }
-      ]
-    },
-    {
       "id": "output-format-for-pr-comments-make-it-immediatel-1a7fb114",
       "title": "Output format for PR comments (make it immediately usable)",
       "summary": "Output format for PR comments (make it immediately usable).",
@@ -28447,8 +28436,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.8,
-      "first_seen": "2026-11-25T08:10:54.712946+00:00",
-      "last_updated": "2026-11-25T08:10:54.712946+00:00",
+      "first_seen": "2026-11-25T12:21:10.851570+00:00",
+      "last_updated": "2026-11-25T12:21:10.851570+00:00",
       "examples": [
         {
           "text": "Write human-readable code.",
@@ -33872,8 +33861,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.6,
-      "first_seen": "2026-11-25T08:10:55.348415+00:00",
-      "last_updated": "2026-11-25T08:10:55.348415+00:00",
+      "first_seen": "2026-11-25T12:21:11.504271+00:00",
+      "last_updated": "2026-11-25T12:21:11.504271+00:00",
       "examples": [
         {
           "text": "Optimize images (use next/image).",
@@ -37490,6 +37479,30 @@
       ]
     },
     {
+      "id": "don-t-skip-input-validation-in-tools-eac9584e",
+      "title": "Don't skip input validation in tools",
+      "summary": "Don't skip input validation in tools.",
+      "category": "Security & Secrets",
+      "agents": [
+        "Windsurf"
+      ],
+      "adoption_count": 1,
+      "weighted_score": 3.5,
+      "first_seen": "2026-11-25T12:21:16.353030+00:00",
+      "last_updated": "2026-11-25T12:21:16.353030+00:00",
+      "examples": [
+        {
+          "text": "Don't skip input validation in tools.",
+          "repo": "opgginc/laravel-mcp-server",
+          "repo_url": "https://github.com/opgginc/laravel-mcp-server",
+          "file_path": ".windsurfrules",
+          "file_url": "https://github.com/opgginc/laravel-mcp-server/blob/0dae1cac677a48339c7e6b23659c10e26c801513/.windsurfrules",
+          "stars": 331,
+          "agent": "Windsurf"
+        }
+      ]
+    },
+    {
       "id": "em-dashes-alone-many-journalists-use-them-consta-5e43c00a",
       "title": "Em dashes alone. Many journalists use them constantly. Evidence only when paired with formulaic rhythm",
       "summary": "Em dashes alone. Many journalists use them constantly. Evidence only when paired with formulaic rhythm.",
@@ -39012,8 +39025,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 3.5,
-      "first_seen": "2026-11-25T08:10:46.695898+00:00",
-      "last_updated": "2026-11-25T08:10:46.695898+00:00",
+      "first_seen": "2026-11-25T12:21:03.760098+00:00",
+      "last_updated": "2026-11-25T12:21:03.760098+00:00",
       "examples": [
         {
           "text": "Test bridge connection:.",
@@ -50770,6 +50783,30 @@
       ]
     },
     {
+      "id": "npm-run-test-executes-the-test-suites-for-all-pa-38487743",
+      "title": "`npm run test`: Executes the test suites for all packages",
+      "summary": "`npm run test`: Executes the test suites for all packages.",
+      "category": "Tooling & Dependencies",
+      "agents": [
+        "Gemini"
+      ],
+      "adoption_count": 1,
+      "weighted_score": 3.4,
+      "first_seen": "2026-11-24T15:15:31.752278+00:00",
+      "last_updated": "2026-11-24T15:15:31.752294+00:00",
+      "examples": [
+        {
+          "text": "To run all tests for all packages, execute `npm run test` from the root.",
+          "repo": "felipebarcelospro/igniter-js",
+          "repo_url": "https://github.com/felipebarcelospro/igniter-js",
+          "file_path": "GEMINI.md",
+          "file_url": "https://github.com/felipebarcelospro/igniter-js/blob/e5d42e833983408ffd2e922cad9fd32fa462362d/GEMINI.md",
+          "stars": 240,
+          "agent": "Gemini"
+        }
+      ]
+    },
+    {
       "id": "ruff-check-run-ruff-linting-00d428db",
       "title": "`ruff check` — Run ruff linting",
       "summary": "`ruff check` — Run ruff linting.",
@@ -54740,30 +54777,6 @@
           "file_url": "https://github.com/LeonMusCoden/LetterFeed/blob/454c27ba6c9d2f4fd624cc888e46769f541602c0/GEMINI.md",
           "stars": 213,
           "agent": "Gemini"
-        }
-      ]
-    },
-    {
-      "id": "log-before-after-scores-cd64a5cf",
-      "title": "Log before/after scores",
-      "summary": "Log before/after scores.",
-      "category": "Error Handling",
-      "agents": [
-        "Universal"
-      ],
-      "adoption_count": 1,
-      "weighted_score": 3.3,
-      "first_seen": "2026-11-25T08:11:13.030117+00:00",
-      "last_updated": "2026-11-25T08:11:13.030117+00:00",
-      "examples": [
-        {
-          "text": "Log before/after scores.",
-          "repo": "Yonkoo11/hermes-dojo",
-          "repo_url": "https://github.com/Yonkoo11/hermes-dojo",
-          "file_path": "SKILL.md",
-          "file_url": "https://github.com/Yonkoo11/hermes-dojo/blob/ee114e72e18b13d3aeb4b76a8d1ade0916972248/SKILL.md",
-          "stars": 198,
-          "agent": "Universal"
         }
       ]
     },
@@ -66356,6 +66369,30 @@
           "file_url": "https://github.com/saubakirov/KZ-IT-telegram-list/blob/13a88a07544e3d13617461f2aa1687df6f76125b/AGENTS.md",
           "stars": 147,
           "agent": "Universal"
+        }
+      ]
+    },
+    {
+      "id": "required-documentation-updates-are-missing-chang-4f7a7ee0",
+      "title": "Required documentation updates are missing (`Changes.md` for CLI/MSP/defaults)",
+      "summary": "Required documentation updates are missing (`Changes.md` for CLI/MSP/defaults).",
+      "category": "Tooling & Dependencies",
+      "agents": [
+        "Cursor"
+      ],
+      "adoption_count": 1,
+      "weighted_score": 3.2,
+      "first_seen": "2026-11-24T13:14:12.739022+00:00",
+      "last_updated": "2026-11-24T13:14:12.739229+00:00",
+      "examples": [
+        {
+          "text": "Update `Changes.md` when required (CLI, MSP, default values).",
+          "repo": "rotorflight/rotorflight-firmware",
+          "repo_url": "https://github.com/rotorflight/rotorflight-firmware",
+          "file_path": ".cursorrules",
+          "file_url": "https://github.com/rotorflight/rotorflight-firmware/blob/2a0a8d10712499651f00a817af5559bab6582b87/.cursorrules",
+          "stars": 170,
+          "agent": "Cursor"
         }
       ]
     },
@@ -79300,30 +79337,6 @@
       ]
     },
     {
-      "id": "for-synchronous-operations-within-async-tools-us-2c738e2d",
-      "title": "For synchronous operations within async tools, use `asyncio.to_thread`",
-      "summary": "For synchronous operations within async tools, use `asyncio.to_thread`.",
-      "category": "Testing & Verification",
-      "agents": [
-        "Cursor"
-      ],
-      "adoption_count": 1,
-      "weighted_score": 2.9,
-      "first_seen": "2026-11-24T13:14:12.757828+00:00",
-      "last_updated": "2026-11-24T13:14:12.757828+00:00",
-      "examples": [
-        {
-          "text": "For synchronous operations within async tools, use `asyncio.to_thread`.",
-          "repo": "VRSEN/agency-voice-interface",
-          "repo_url": "https://github.com/VRSEN/agency-voice-interface",
-          "file_path": ".cursorrules",
-          "file_url": "https://github.com/VRSEN/agency-voice-interface/blob/2d9d39ce02d9cb9628e8de79b3543fe05885ad42/.cursorrules",
-          "stars": 83,
-          "agent": "Cursor"
-        }
-      ]
-    },
-    {
       "id": "format-before-completion-always-run-uv-run-pre-c-8491e3b5",
       "title": "Format Before Completion: Always run `uv run pre-commit run --all-files` and ensure it passes before...",
       "summary": "Format Before Completion: Always run `uv run pre-commit run --all-files` and ensure it passes before finishing execution.",
@@ -89143,8 +89156,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 2.8,
-      "first_seen": "2026-11-25T08:10:56.802113+00:00",
-      "last_updated": "2026-11-25T08:10:56.802113+00:00",
+      "first_seen": "2026-11-25T12:21:12.996521+00:00",
+      "last_updated": "2026-11-25T12:21:12.996521+00:00",
       "examples": [
         {
           "text": "[ ] Explain error handling.",
@@ -90271,8 +90284,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 2.8,
-      "first_seen": "2026-11-25T08:10:50.837024+00:00",
-      "last_updated": "2026-11-25T08:10:50.837024+00:00",
+      "first_seen": "2026-11-25T12:21:08.071802+00:00",
+      "last_updated": "2026-11-25T12:21:08.071802+00:00",
       "examples": [
         {
           "text": "`setCustomer`, `setCustomerId`, `setQueryParams`, `setFilter`), sempre com `return $this`.",
@@ -91534,30 +91547,6 @@
           "file_path": "AGENTS.md",
           "file_url": "https://github.com/fiberfx/mercury/blob/730e1dd4b234025a74044015bac4d8dba161b83b/AGENTS.md",
           "stars": 44,
-          "agent": "Universal"
-        }
-      ]
-    },
-    {
-      "id": "budgets-tools-or-requirements-cca046de",
-      "title": "Budgets, tools, or requirements",
-      "summary": "Budgets, tools, or requirements.",
-      "category": "Code Style & Architecture",
-      "agents": [
-        "Universal"
-      ],
-      "adoption_count": 1,
-      "weighted_score": 2.7,
-      "first_seen": "2026-11-25T08:11:13.786000+00:00",
-      "last_updated": "2026-11-25T08:11:13.786000+00:00",
-      "examples": [
-        {
-          "text": "Budgets, tools, or requirements.",
-          "repo": "Apeironics/prompt-refine-skill",
-          "repo_url": "https://github.com/Apeironics/prompt-refine-skill",
-          "file_path": "SKILL.md",
-          "file_url": "https://github.com/Apeironics/prompt-refine-skill/blob/8fe3abe9b8475a15ddbf89ea3d027a8b7c0448df/SKILL.md",
-          "stars": 54,
           "agent": "Universal"
         }
       ]
@@ -93431,8 +93420,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 2.7,
-      "first_seen": "2026-11-25T08:11:09.095913+00:00",
-      "last_updated": "2026-11-25T08:11:09.095913+00:00",
+      "first_seen": "2026-11-25T12:21:24.368276+00:00",
+      "last_updated": "2026-11-25T12:21:24.368276+00:00",
       "examples": [
         {
           "text": "Format Code: `make format` (runs `gofmt`).",
@@ -103033,8 +103022,8 @@
       ],
       "adoption_count": 1,
       "weighted_score": 2.7,
-      "first_seen": "2026-11-25T08:11:11.379858+00:00",
-      "last_updated": "2026-11-25T08:11:11.379858+00:00",
+      "first_seen": "2026-11-25T12:21:26.619833+00:00",
+      "last_updated": "2026-11-25T12:21:26.619833+00:00",
       "examples": [
         {
           "text": "`input`: To Request and Validate Data.",
