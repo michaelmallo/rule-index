@@ -1,8 +1,6 @@
 # AGENTS.md
 
-Authoritative engineering rules for AI coding agents working in the **RuleIndex** repository (`scraper/` Python ETL + SQLite, `web/` Vite + React + TypeScript + Tailwind CSS, `.github/workflows/` CI/CD).
-
-> Curated from RuleIndex's own live leaderboard rankings (`2026-11-27`, 1,964 repositories indexed), filtered to rules directly applicable to this codebase.
+Authoritative engineering rules and behavioral guidelines for AI coding agents contributing to the **RuleIndex** repository. Follow these standards for code quality, testing, version control, security, dependency management, communication, and error handling across all tasks in this project.
 
 ---
 
