@@ -302,3 +302,4 @@ export function HelpPage({ docId, theme, onChangeTheme, onNavigateDoc }: HelpPag
     </div>
   );
 }
+
