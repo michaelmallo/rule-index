@@ -135,6 +135,7 @@ class SemanticEmbedder:
         if self._backend == "sentence-transformers" and self._st_model is not None:
             vectors = self._st_model.encode(
                 texts,
+                batch_size=256,
                 normalize_embeddings=True,
                 show_progress_bar=False,
             )
@@ -202,6 +203,87 @@ class SemanticEmbedder:
         return mat / norms
 
 
+# Above this count, AgglomerativeClustering's O(N^2) distance matrix exceeds
+# GitHub Actions runner RAM (~7 GB), so we switch to vectorized streaming centroid clustering.
+AGGLOMERATIVE_MAX_N = 2000
+
+
+def _streaming_centroid_cluster(
+    embeddings: np.ndarray,
+    similarity_threshold: float,
+    batch_size: int = 512,
+) -> list[list[int]]:
+    """Fast O(N*K*D) vectorized cosine centroid clustering using BLAS matrix multiply.
+
+    Keeps peak memory O(K*D) float32 (~50 MB even at 50k+ rules) instead of O(N^2).
+    """
+    n, d = embeddings.shape
+    clusters: list[list[int]] = []
+    # Maintain unnormalized sums and normalized centroids in pre-allocated blocks
+    capacity = min(n, 4096)
+    centroid_sums = np.empty((capacity, d), dtype=np.float32)
+    centroids = np.empty((capacity, d), dtype=np.float32)
+    num_clusters = 0
+
+    def _ensure_capacity(needed: int) -> None:
+        nonlocal capacity, centroid_sums, centroids
+        if needed <= capacity:
+            return
+        new_cap = max(capacity * 2, needed)
+        new_sums = np.empty((new_cap, d), dtype=np.float32)
+        new_cents = np.empty((new_cap, d), dtype=np.float32)
+        new_sums[:num_clusters] = centroid_sums[:num_clusters]
+        new_cents[:num_clusters] = centroids[:num_clusters]
+        centroid_sums = new_sums
+        centroids = new_cents
+        capacity = new_cap
+
+    for start in range(0, n, batch_size):
+        end = min(start + batch_size, n)
+        batch = embeddings[start:end]
+
+        if num_clusters > 0:
+            # Single BLAS sgemm for the entire batch against all existing centroids
+            sims = batch @ centroids[:num_clusters].T
+            best_indices = np.argmax(sims, axis=1)
+            best_sims = sims[np.arange(end - start), best_indices]
+        else:
+            best_indices = np.full(end - start, -1, dtype=np.int32)
+            best_sims = np.full(end - start, -1.0, dtype=np.float32)
+
+        new_in_batch_start = num_clusters
+
+        for local_i in range(end - start):
+            global_i = start + local_i
+            vec = batch[local_i]
+            best_c = int(best_indices[local_i])
+            best_sim = float(best_sims[local_i])
+
+            # Also check against any new clusters created earlier within this same batch
+            if num_clusters > new_in_batch_start:
+                intra_sims = centroids[new_in_batch_start:num_clusters] @ vec
+                intra_best_offset = int(np.argmax(intra_sims))
+                intra_best_sim = float(intra_sims[intra_best_offset])
+                if intra_best_sim > best_sim:
+                    best_sim = intra_best_sim
+                    best_c = new_in_batch_start + intra_best_offset
+
+            if best_c >= 0 and best_sim >= similarity_threshold:
+                clusters[best_c].append(global_i)
+                updated_sum = centroid_sums[best_c] + vec
+                centroid_sums[best_c] = updated_sum
+                norm = float(np.linalg.norm(updated_sum))
+                centroids[best_c] = updated_sum / norm if norm > 0.0 else updated_sum
+            else:
+                _ensure_capacity(num_clusters + 1)
+                clusters.append([global_i])
+                centroid_sums[num_clusters] = vec
+                centroids[num_clusters] = vec
+                num_clusters += 1
+
+    return clusters
+
+
 def cluster_embeddings(
     embeddings: np.ndarray,
     similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD,
@@ -213,44 +295,26 @@ def cluster_embeddings(
     if n == 1:
         return [[0]]
 
-    # Use AgglomerativeClustering if scikit-learn is available; else greedy centroid clustering
-    try:
-        from sklearn.cluster import AgglomerativeClustering
+    if n <= AGGLOMERATIVE_MAX_N:
+        try:
+            from sklearn.cluster import AgglomerativeClustering
 
-        distance_threshold = max(0.05, min(0.95, 1.0 - similarity_threshold))
-        clustering = AgglomerativeClustering(
-            n_clusters=None,
-            metric="cosine",
-            linkage="average",
-            distance_threshold=distance_threshold,
-        )
-        labels = clustering.fit_predict(embeddings)
-        groups: dict[int, list[int]] = {}
-        for idx, label in enumerate(labels):
-            groups.setdefault(int(label), []).append(idx)
-        return list(groups.values())
-    except ImportError:
-        clusters: list[list[int]] = []
-        centroids: list[np.ndarray] = []
+            distance_threshold = max(0.05, min(0.95, 1.0 - similarity_threshold))
+            clustering = AgglomerativeClustering(
+                n_clusters=None,
+                metric="cosine",
+                linkage="average",
+                distance_threshold=distance_threshold,
+            )
+            labels = clustering.fit_predict(embeddings)
+            groups: dict[int, list[int]] = {}
+            for idx, label in enumerate(labels):
+                groups.setdefault(int(label), []).append(idx)
+            return list(groups.values())
+        except ImportError:
+            pass
 
-        for idx in range(n):
-            vec = embeddings[idx]
-            best_c = -1
-            best_sim = -1.0
-            for c_idx, centroid in enumerate(centroids):
-                sim = float(np.dot(vec, centroid))
-                if sim > best_sim:
-                    best_sim = sim
-                    best_c = c_idx
-            if best_c >= 0 and best_sim >= similarity_threshold:
-                clusters[best_c].append(idx)
-                updated = np.mean(embeddings[clusters[best_c]], axis=0)
-                norm = np.linalg.norm(updated)
-                centroids[best_c] = updated / norm if norm > 0 else updated
-            else:
-                clusters.append([idx])
-                centroids.append(vec.copy())
-        return clusters
+    return _streaming_centroid_cluster(embeddings, similarity_threshold=similarity_threshold)
 
 
 def canonicalize_with_llm(
@@ -356,9 +420,20 @@ def distill_observations(
     if not observations:
         return []
 
+    # Collapse exact/normalized-key duplicates before embedding to cut compute & memory
+    text_groups: dict[str, list[RawRuleObservation]] = {}
+    representative_texts: list[str] = []
+    group_keys: list[str] = []
+    for obs in observations:
+        key = re.sub(r"[^a-z0-9]+", " ", obs.text.lower()).strip()
+        if key not in text_groups:
+            text_groups[key] = []
+            group_keys.append(key)
+            representative_texts.append(obs.text)
+        text_groups[key].append(obs)
+
     embedder = embedder or SemanticEmbedder()
-    texts = [obs.text for obs in observations]
-    embeddings = embedder.encode(texts)
+    embeddings = embedder.encode(representative_texts)
 
     # Adjust threshold when running on TF-IDF fallback (lexical cosine sims are lower than dense embeddings)
     effective_threshold = (
@@ -372,17 +447,19 @@ def distill_observations(
     now_iso = datetime.now(timezone.utc).isoformat()
 
     for indices in clusters:
-        cluster_obs = [observations[i] for i in indices]
+        cluster_obs: list[RawRuleObservation] = []
+        for idx in indices:
+            cluster_obs.extend(text_groups[group_keys[idx]])
         cluster_vecs = embeddings[indices]
 
-        # Pick medoid (observation closest to the cluster centroid) as default canonical text
+        # Pick medoid (representative text closest to the cluster centroid) as default canonical text
         centroid = np.mean(cluster_vecs, axis=0)
         norm = np.linalg.norm(centroid)
         if norm > 0:
             centroid = centroid / norm
         sims = cluster_vecs @ centroid
         medoid_local_idx = int(np.argmax(sims))
-        medoid_text = cluster_obs[medoid_local_idx].text
+        medoid_text = representative_texts[indices[medoid_local_idx]]
 
         # Build concise title and summary
         default_title = medoid_text.rstrip(".")
