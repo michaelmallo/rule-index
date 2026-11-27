@@ -1,12 +1,9 @@
 import {
   ArrowUpDown,
-  Check,
   CircleHelp,
-  Copy,
   Flame,
   GitBranch,
   Layers,
-  MessageSquareQuote,
   RotateCcw,
   Search,
   Share2,
@@ -15,14 +12,42 @@ import {
   Star,
   X,
 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Suspense,
+  lazy,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { FilterPanel } from './components/FilterPanel';
-import { HelpPage } from './components/HelpPage';
+import { RuleCard } from './components/RuleCard';
 import { RuleDetailDialog } from './components/RuleDetailDialog';
 import { ShareDialog } from './components/ShareDialog';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { ToastRegion } from './components/ToastRegion';
 import { useLocalStorage } from './hooks/useLocalStorage';
+
+const LazyHelpPage = lazy(() =>
+  import('./components/HelpPage').then((mod) => ({ default: mod.HelpPage }))
+);
+
+const INITIAL_VISIBLE_RULES = 50;
+const LOAD_MORE_BATCH_SIZE = 50;
+const ABOVE_THE_FOLD_CARD_COUNT = 10;
+
+interface IndexedRule {
+  rule: CanonicalRule;
+  searchText: string;
+  firstSeenMs: number;
+  agentMask: number;
+}
+
+const AGENT_BIT: Record<string, number> = Object.fromEntries(
+  ALL_AGENTS.map((agent, index) => [agent, 1 << index])
+);
 import {
   AGENT_LABELS,
   ALL_AGENTS,
@@ -75,8 +100,16 @@ export function App() {
     const params = new URLSearchParams(window.location.search);
     return params.get('help');
   });
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_RULES);
 
   const mobileDrawerRef = useRef<HTMLDialogElement>(null);
+  const loadMoreSentinelRef = useRef<HTMLDivElement>(null);
+
+  const deferredQuery = useDeferredValue(filters.query);
+  const deferredAgents = useDeferredValue(filters.agents);
+  const deferredCategories = useDeferredValue(filters.categories);
+  const deferredMinAdoption = useDeferredValue(filters.minAdoption);
+  const deferredSort = useDeferredValue(filters.sort);
 
   // Keep help view synced with browser back/forward navigation
   useEffect(() => {
@@ -209,6 +242,23 @@ export function App() {
 
   const rules = dataset?.rules ?? [];
 
+  // Build search & sort index once when the dataset loads so filtering/sorting 35k+ rules takes milliseconds
+  const indexedRules = useMemo<IndexedRule[]>(() => {
+    return rules.map((rule) => {
+      let agentMask = 0;
+      for (const agent of rule.agents) {
+        agentMask |= AGENT_BIT[agent] ?? 0;
+      }
+      const exampleParts = rule.examples.map((e) => `${e.text} ${e.repo}`).join(' ');
+      return {
+        rule,
+        searchText: `${rule.title} ${rule.summary} ${rule.category} ${rule.agents.join(' ')} ${exampleParts}`.toLowerCase(),
+        firstSeenMs: Date.parse(rule.first_seen) || 0,
+        agentMask,
+      };
+    });
+  }, [rules]);
+
   // Facet counts across all rules
   const agentCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -231,47 +281,76 @@ export function App() {
   }, [rules]);
 
   const filteredRules = useMemo(() => {
-    const q = filters.query.trim().toLowerCase();
+    const q = deferredQuery.trim().toLowerCase();
+    let requiredAgentMask = 0;
+    for (const agent of deferredAgents) {
+      requiredAgentMask |= AGENT_BIT[agent] ?? 0;
+    }
+    const categorySet = deferredCategories.length > 0 ? new Set(deferredCategories) : null;
 
-    const matched = rules.filter((rule) => {
-      if (rule.adoption_count < filters.minAdoption) return false;
+    const matched: IndexedRule[] = [];
+    for (const entry of indexedRules) {
+      if (entry.rule.adoption_count < deferredMinAdoption) continue;
+      if (requiredAgentMask !== 0 && (entry.agentMask & requiredAgentMask) === 0) continue;
+      if (categorySet !== null && !categorySet.has(entry.rule.category)) continue;
+      if (q && !entry.searchText.includes(q)) continue;
+      matched.push(entry);
+    }
 
-      if (filters.agents.length > 0 && !filters.agents.some((a) => rule.agents.includes(a))) {
-        return false;
-      }
+    if (deferredSort === 'weighted') {
+      matched.sort(
+        (a, b) =>
+          b.rule.weighted_score - a.rule.weighted_score ||
+          b.rule.adoption_count - a.rule.adoption_count
+      );
+    } else if (deferredSort === 'trending') {
+      matched.sort(
+        (a, b) =>
+          b.firstSeenMs - a.firstSeenMs || b.rule.weighted_score - a.rule.weighted_score
+      );
+    } else {
+      matched.sort(
+        (a, b) =>
+          b.rule.adoption_count - a.rule.adoption_count ||
+          b.rule.weighted_score - a.rule.weighted_score
+      );
+    }
 
-      if (filters.categories.length > 0 && !filters.categories.includes(rule.category)) {
-        return false;
-      }
+    return matched.map((entry) => entry.rule);
+  }, [deferredAgents, deferredCategories, deferredMinAdoption, deferredQuery, deferredSort, indexedRules]);
 
-      if (q) {
-        const haystack = [
-          rule.title,
-          rule.summary,
-          rule.category,
-          ...rule.agents,
-          ...rule.examples.map((e) => `${e.text} ${e.repo}`),
-        ]
-          .join(' ')
-          .toLowerCase();
-        if (!haystack.includes(q)) return false;
-      }
+  // Reset rendered window whenever the filtered/sorted list changes
+  useEffect(() => {
+    setVisibleCount(INITIAL_VISIBLE_RULES);
+  }, [deferredAgents, deferredCategories, deferredMinAdoption, deferredQuery, deferredSort]);
 
-      return true;
-    });
+  // Automatically reveal more rules as the user scrolls near the bottom
+  useEffect(() => {
+    const sentinel = loadMoreSentinelRef.current;
+    if (!sentinel || visibleCount >= filteredRules.length) return;
+    if (typeof IntersectionObserver === 'undefined') return;
 
-    return [...matched].sort((a, b) => {
-      if (filters.sort === 'weighted') {
-        return b.weighted_score - a.weighted_score || b.adoption_count - a.adoption_count;
-      }
-      if (filters.sort === 'trending') {
-        const dateDiff = new Date(b.first_seen).getTime() - new Date(a.first_seen).getTime();
-        if (dateDiff !== 0) return dateDiff;
-        return b.weighted_score - a.weighted_score;
-      }
-      return b.adoption_count - a.adoption_count || b.weighted_score - a.weighted_score;
-    });
-  }, [filters, rules]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setVisibleCount((prev) => Math.min(prev + LOAD_MORE_BATCH_SIZE, filteredRules.length));
+        }
+      },
+      { rootMargin: '800px 0px' }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [filteredRules.length, visibleCount]);
+
+  const visibleRules = useMemo(
+    () => filteredRules.slice(0, visibleCount),
+    [filteredRules, visibleCount]
+  );
+
+  const handleSelectRule = useCallback((rule: CanonicalRule, rank: number) => {
+    setSelectedRule({ rule, rank });
+  }, []);
 
   const activeFilterCount =
     filters.agents.length +
@@ -377,12 +456,20 @@ export function App() {
 
   if (helpDocId !== null) {
     return (
-      <HelpPage
-        docId={helpDocId}
-        theme={theme}
-        onChangeTheme={setTheme}
-        onNavigateDoc={navigateHelpDoc}
-      />
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center text-sm" style={{ color: 'var(--text-muted)' }}>
+            Loading documentation…
+          </div>
+        }
+      >
+        <LazyHelpPage
+          docId={helpDocId}
+          theme={theme}
+          onChangeTheme={setTheme}
+          onNavigateDoc={navigateHelpDoc}
+        />
+      </Suspense>
     );
   }
 
@@ -743,152 +830,51 @@ export function App() {
                 </button>
               </div>
             ) : (
-              <ol
-                className="flex flex-col gap-2 sm:gap-3"
-                aria-label="Ranked AI coding agent rules"
-              >
-                {filteredRules.map((rule, index) => {
-                  const rank = index + 1;
-                  const isCopied = copiedId === rule.id;
-
-                  return (
-                    <li
+              <>
+                <ol
+                  className="flex flex-col gap-2 sm:gap-3"
+                  aria-label="Ranked AI coding agent rules"
+                >
+                  {visibleRules.map((rule, index) => (
+                    <RuleCard
                       key={rule.id}
-                      className="rounded-xl border p-3 transition-colors sm:rounded-2xl sm:p-5"
+                      rule={rule}
+                      rank={index + 1}
+                      isCopied={copiedId === rule.id}
+                      isDeferred={index >= ABOVE_THE_FOLD_CARD_COUNT}
+                      selectedAgents={filters.agents}
+                      onToggleAgent={toggleAgent}
+                      onCopyRule={handleCopyRule}
+                      onSelectRule={handleSelectRule}
+                    />
+                  ))}
+                </ol>
+
+                {visibleCount < filteredRules.length && (
+                  <div
+                    ref={loadMoreSentinelRef}
+                    className="mt-4 flex flex-col items-center gap-2 py-3 text-center"
+                  >
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      Showing {visibleRules.length.toLocaleString()} of {filteredRules.length.toLocaleString()} matching rules
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setVisibleCount((prev) => Math.min(prev + LOAD_MORE_BATCH_SIZE, filteredRules.length))
+                      }
+                      className="inline-flex min-h-9 items-center justify-center rounded-xl border px-4 py-1.5 text-xs font-semibold transition-colors cursor-pointer"
                       style={{
                         backgroundColor: 'var(--bg-surface)',
-                        borderColor: 'var(--border-subtle)',
+                        borderColor: 'var(--border-strong)',
+                        color: 'var(--text-primary)',
                       }}
                     >
-                      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-                        {/* Rank + Main Rule Info */}
-                        <div className="flex items-start gap-2.5 min-w-0 flex-1 sm:gap-3.5">
-                          <span
-                            className="mt-0.5 inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-lg px-1.5 text-[11px] font-bold tabular-nums sm:h-8 sm:min-w-8 sm:px-2 sm:text-xs"
-                            style={{
-                              backgroundColor: rank <= 3 ? 'var(--rank-bg)' : 'var(--bg-subtle)',
-                              color: rank <= 3 ? 'var(--rank-text)' : 'var(--text-primary)',
-                            }}
-                            aria-label={`Rank ${rank}`}
-                          >
-                            #{rank}
-                          </span>
-
-                          <div className="min-w-0 flex-1">
-                            <div className="mb-1 flex flex-wrap items-center gap-1.5 sm:mb-1.5 sm:gap-2">
-                              <span
-                                className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold sm:px-2.5 sm:text-[11px]"
-                                style={{
-                                  backgroundColor: 'var(--accent-soft)',
-                                  color: 'var(--accent-text)',
-                                }}
-                              >
-                                {rule.category}
-                              </span>
-                              <span
-                                className="inline-flex items-center gap-1 text-[11px] font-semibold tabular-nums sm:text-xs"
-                                style={{ color: 'var(--text-secondary)' }}
-                              >
-                                <GitBranch className="h-3 w-3 sm:h-3.5 sm:w-3.5" style={{ color: 'var(--accent)' }} aria-hidden="true" />
-                                {rule.adoption_count.toLocaleString()} repos
-                              </span>
-                              <span
-                                className="inline-flex items-center gap-1 text-[11px] tabular-nums sm:text-xs"
-                                style={{ color: 'var(--text-muted)' }}
-                              >
-                                <Star className="h-3 w-3" aria-hidden="true" />
-                                {rule.weighted_score.toFixed(1)}
-                              </span>
-                            </div>
-
-                            <h2
-                              className="text-sm font-bold leading-snug sm:text-[17px]"
-                              style={{ color: 'var(--text-primary)' }}
-                            >
-                              {rule.title}
-                            </h2>
-
-                            <p className="mt-1 text-xs leading-relaxed sm:text-sm" style={{ color: 'var(--text-secondary)' }}>
-                              {rule.summary}
-                            </p>
-
-                            {/* Target Agent Badges */}
-                            <div className="mt-2 flex flex-wrap items-center gap-1 sm:mt-3 sm:gap-1.5">
-                              {rule.agents.map((agent) => (
-                                <button
-                                  key={agent}
-                                  type="button"
-                                  onClick={() => toggleAgent(agent)}
-                                  title={`Filter by ${agent}`}
-                                  className="inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-medium transition-colors cursor-pointer sm:px-2 sm:text-[11px]"
-                                  style={
-                                    filters.agents.includes(agent)
-                                      ? {
-                                          backgroundColor: 'var(--accent-soft)',
-                                          borderColor: 'var(--accent)',
-                                          color: 'var(--accent-text)',
-                                        }
-                                      : {
-                                          backgroundColor: 'var(--badge-bg)',
-                                          borderColor: 'var(--border-subtle)',
-                                          color: 'var(--badge-text)',
-                                        }
-                                  }
-                                >
-                                  {agent}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-stretch">
-                          <button
-                            type="button"
-                            onClick={() => handleCopyRule(rule)}
-                            className="inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer sm:flex-initial"
-                            style={
-                              isCopied
-                                ? {
-                                    backgroundColor: 'var(--accent)',
-                                    borderColor: 'var(--accent)',
-                                    color: '#ffffff',
-                                  }
-                                : {
-                                    backgroundColor: 'var(--bg-subtle)',
-                                    borderColor: 'var(--border-subtle)',
-                                    color: 'var(--text-primary)',
-                                  }
-                            }
-                          >
-                            {isCopied ? (
-                              <Check className="h-3.5 w-3.5" aria-hidden="true" />
-                            ) : (
-                              <Copy className="h-3.5 w-3.5" aria-hidden="true" />
-                            )}
-                            <span>{isCopied ? 'Copied' : 'Copy Rule'}</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setSelectedRule({ rule, rank })}
-                            className="inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer sm:flex-initial"
-                            style={{
-                              backgroundColor: 'var(--bg-surface)',
-                              borderColor: 'var(--border-strong)',
-                              color: 'var(--text-secondary)',
-                            }}
-                          >
-                            <MessageSquareQuote className="h-3.5 w-3.5" aria-hidden="true" />
-                            <span>Examples ({rule.examples.length})</span>
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
+                      Load more rules
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
