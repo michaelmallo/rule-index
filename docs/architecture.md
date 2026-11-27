@@ -63,6 +63,7 @@ rule-index/
 │   ├── package.json                # Frontend scripts & dependencies
 │   ├── tsconfig.json               # Strict TypeScript configuration
 │   └── vite.config.ts              # Vite build config (base: '/rule-index/')
+├── AGENTS.md                       # Authoritative engineering rules for AI coding agents
 └── README.md                       # High-level overview & quick start
 ```
 

@@ -20,6 +20,8 @@ This document covers local development for both the Python scraper and the Vite/
 - **Node.js 22+** and **npm** (for `/web`)
 - A **GitHub Personal Access Token** (`GITHUB_TOKEN`) if running `--mode live` locally (GitHub Code Search requires authentication).
 
+> **Contributing & AI Agent Rules**: Before making code or documentation changes, read [`AGENTS.md`](../AGENTS.md) at the repository root. It defines the authoritative engineering standards for code style, testing, git workflow, security, dependencies, and error handling in this repository.
+
 ---
 
 ## 1. Running the Python Scraper Locally (`/scraper`)
