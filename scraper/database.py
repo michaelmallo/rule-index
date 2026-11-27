@@ -481,10 +481,16 @@ class RuleDatabase:
             ],
         }
 
-        serialized = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+        compact_serialized = json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
+        pretty_serialized = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
         for path in output_paths:
             path = Path(path)
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(serialized, encoding="utf-8")
+            # Minify the static web asset to minimize transfer & JSON.parse time on mobile
+            is_web_asset = "public" in path.parts
+            path.write_text(
+                compact_serialized if is_web_asset else pretty_serialized,
+                encoding="utf-8",
+            )
 
         return payload

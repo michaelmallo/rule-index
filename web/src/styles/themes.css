@@ -212,6 +212,12 @@ dialog.mobile-filter-dialog[open] {
   border: 0;
 }
 
+/* Applied strictly to below-the-fold rule cards (index >= 10) to skip off-screen layout/paint */
+.rule-card-deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto none auto 168px;
+}
+
 /* Help documentation Markdown prose styling */
 .help-prose {
   color: var(--text-primary);
