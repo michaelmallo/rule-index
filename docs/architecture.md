@@ -48,6 +48,7 @@ rule-index/
 ├── web/
 │   ├── public/
 │   │   ├── favicon.svg             # Matching brand tab icon
+│   │   ├── og-preview.png          # 1200x630 branded Open Graph / social preview image
 │   │   └── data/
 │   │       └── rules.json          # Static dataset served by Vite / GitHub Pages
 │   ├── src/
