@@ -6,9 +6,11 @@ interface RuleCardProps {
   rule: CanonicalRule;
   rank: number;
   isCopied: boolean;
+  isSelected: boolean;
   isDeferred: boolean;
   selectedAgents: readonly string[];
   onToggleAgent: (agent: string) => void;
+  onToggleSelect: (ruleId: string) => void;
   onCopyRule: (rule: CanonicalRule) => void;
   onSelectRule: (rule: CanonicalRule, rank: number) => void;
 }
@@ -17,9 +19,11 @@ export const RuleCard = memo(function RuleCard({
   rule,
   rank,
   isCopied,
+  isSelected,
   isDeferred,
   selectedAgents,
   onToggleAgent,
+  onToggleSelect,
   onCopyRule,
   onSelectRule,
 }: RuleCardProps) {
@@ -28,22 +32,32 @@ export const RuleCard = memo(function RuleCard({
       className={`${isDeferred ? 'rule-card-deferred ' : ''}rounded-xl border p-3 transition-colors sm:rounded-2xl sm:p-5`}
       style={{
         backgroundColor: 'var(--bg-surface)',
-        borderColor: 'var(--border-subtle)',
+        borderColor: isSelected ? 'var(--accent)' : 'var(--border-subtle)',
       }}
     >
       <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-        {/* Rank + Main Rule Info */}
+        {/* Rank + Select Checkbox + Main Rule Info */}
         <div className="flex items-start gap-2.5 min-w-0 flex-1 sm:gap-3.5">
-          <span
-            className="mt-0.5 inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-lg px-1.5 text-[11px] font-bold tabular-nums sm:h-8 sm:min-w-8 sm:px-2 sm:text-xs"
-            style={{
-              backgroundColor: rank <= 3 ? 'var(--rank-bg)' : 'var(--bg-subtle)',
-              color: rank <= 3 ? 'var(--rank-text)' : 'var(--text-primary)',
-            }}
-            aria-label={`Rank ${rank}`}
-          >
-            #{rank}
-          </span>
+          <div className="flex flex-col items-center gap-1.5 shrink-0">
+            <span
+              className="mt-0.5 inline-flex h-7 min-w-7 items-center justify-center rounded-lg px-1.5 text-[11px] font-bold tabular-nums sm:h-8 sm:min-w-8 sm:px-2 sm:text-xs"
+              style={{
+                backgroundColor: rank <= 3 ? 'var(--rank-bg)' : 'var(--bg-subtle)',
+                color: rank <= 3 ? 'var(--rank-text)' : 'var(--text-primary)',
+              }}
+              aria-label={`Rank ${rank}`}
+            >
+              #{rank}
+            </span>
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={() => onToggleSelect(rule.id)}
+              aria-label={`Select rule for rules file: ${rule.title}`}
+              title={isSelected ? 'Remove from rules file selection' : 'Select for rules file'}
+              className="h-4 w-4 cursor-pointer rounded accent-[var(--accent)]"
+            />
+          </div>
 
           <div className="min-w-0 flex-1">
             <div className="mb-1 flex flex-wrap items-center gap-1.5 sm:mb-1.5 sm:gap-2">

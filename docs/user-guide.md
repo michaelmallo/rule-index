@@ -61,6 +61,17 @@ Each rule card displays:
 
 ---
 
+## Rules File Generator
+
+You can assemble a ready-to-use, generic Markdown rules file (compatible with `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `GEMINI.md`, or `.github/copilot-instructions.md`) directly in the browser:
+
+1. **Hand-Pick Individual Rules**: Check the selection checkbox beneath the rank badge on any rule card. A compact floating bar appears at the bottom of the screen showing how many rules are selected.
+2. **Or Use Top `N` per Category**: Click **Generate Rules File** in the leaderboard toolbar (or **Generate Rules** below the title on mobile) to open the generator modal.
+3. **Configure & Submit**: Choose **Top N per Category** (pick any combination of the 7 categories and `N` from `1` to `25`), **Hand-Picked**, or **Combine Both** (automatically deduplicated). When filters are active, you can optionally restrict Top `N` selection to the currently filtered leaderboard.
+4. **Copy or Download**: Click **Generate Rules File** to preview the formatted Markdown grouped by category, then use **Copy to Clipboard** (or **Download .md**) to save it into your project.
+
+---
+
 ## Real-World Examples Modal
 
 Clicking **Examples** on any rule opens a modal dialog containing:
