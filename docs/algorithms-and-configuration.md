@@ -42,7 +42,7 @@ GitHub's Code Search API enforces two hard constraints:
 
 To continuously discover thousands of unique repositories without hitting API limits or endlessly re-scraping the same top results, RuleIndex combines four mechanisms:
 
-1. **Hourly Execution (`cron: '0 * * * *'`)**: Runs 24 times/day (168 times/week) with a 45-minute job timeout.
+1. **Hourly Execution (`cron: '37 * * * *'`)**: Runs 24 times/day (168 times/week) at an off-peak minute (`:37`) to avoid top-of-hour GitHub Actions queue spikes, with a 45-minute job timeout.
 2. **Rotating Language Shards (`LANGUAGE_SHARDS`, 12 shards)**:
    - Shards: `""` (general baseline), `typescript`, `python`, `javascript`, `rust`, `golang`, `java`, `csharp`, `cpp`, `ruby`, `php`, `swift`.
    - **Why content terms instead of `language:`?** In GitHub Code Search, `language:Python` filters by the *file's own language*. Because `AGENTS.md` and `CLAUDE.md` are Markdown files, `filename:AGENTS.md language:Python` returns zero matches. Appending the language ecosystem keyword (`filename:AGENTS.md python`) matches agent rule files that actually discuss Python tooling/conventions.
