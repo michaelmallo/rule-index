@@ -28,8 +28,6 @@ interface RuleGeneratorDialogProps {
   hasActiveFilters: boolean;
   activeCategories: readonly string[];
   activeSort: SortOption;
-  initialTopN?: number | null;
-  initialIncludeSummaries?: boolean | null;
   manualSelectedRules: readonly CanonicalRule[];
   onRemoveManualRule: (ruleId: string) => void;
   onClearManualRules: () => void;
@@ -50,8 +48,6 @@ export function RuleGeneratorDialog({
   hasActiveFilters,
   activeCategories,
   activeSort,
-  initialTopN = null,
-  initialIncludeSummaries = null,
   manualSelectedRules,
   onRemoveManualRule,
   onClearManualRules,
@@ -75,27 +71,12 @@ export function RuleGeneratorDialog({
     if (!open) return;
     setStep('configure');
     setIsCopied(false);
-    setMode(
-      initialTopN !== null ? 'top-n' : manualSelectedRules.length > 0 ? 'manual' : 'top-n'
-    );
-    if (initialTopN !== null) {
-      setPerCategoryCount(Math.max(MIN_PER_CATEGORY, Math.min(MAX_PER_CATEGORY, initialTopN)));
-    }
-    if (initialIncludeSummaries !== null) {
-      setIncludeSummaries(initialIncludeSummaries);
-    }
+    setMode(manualSelectedRules.length > 0 ? 'manual' : 'top-n');
     setSelectedCategories(
       activeCategories.length > 0 ? [...activeCategories] : [...ALL_CATEGORIES]
     );
     setUseFilteredPool(hasActiveFilters);
-  }, [
-    open,
-    activeCategories,
-    hasActiveFilters,
-    initialIncludeSummaries,
-    initialTopN,
-    manualSelectedRules.length,
-  ]);
+  }, [open, activeCategories, hasActiveFilters, manualSelectedRules.length]);
 
   useEffect(() => {
     const dialog = dialogRef.current;

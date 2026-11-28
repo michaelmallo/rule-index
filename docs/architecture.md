@@ -8,7 +8,6 @@ RuleIndex is structured as a modular monorepo combining a Python ETL/distillatio
 
 - [Overview & Quick Start](../README.md) — High-level overview of RuleIndex and a quick guide to using the web application.
 - [Web App User Guide](user-guide.md) — Detailed walkthrough of searching, filtering, sorting, copying rules, inspecting real-world examples, sharing links, and customizing themes.
-- [REST API Reference](api.md) — Complete reference and usage examples for the RuleIndex RESTful API, static GitHub Pages JSON endpoints, and web page URL automation.
 - **Architecture & Codebase Reference** *(current page)* — Complete repository layout, file-by-file breakdown, database schema, JSON dataset format, and frontend component overview.
 - [Algorithms, Scraping & Configuration](algorithms-and-configuration.md) — Deep-dive into GitHub discovery, language sharding, revisit windows, rule parsing, English normalization, semantic clustering, and ranking math.
 - [Development, Setup & Deployment](development-and-deployment.md) — Instructions for running the scraper and frontend locally, configuring GitHub Pages, managing optional API secrets, and maintaining the pipeline.
@@ -22,16 +21,11 @@ rule-index/
 ├── .github/
 │   └── workflows/
 │       └── update-and-deploy.yml   # Hourly scrape, commit, build & GitHub Pages deployment
-├── api/
-│   ├── service.py                  # REST query, filter, sort, rules-file generator & OpenAPI logic
-│   ├── server.py                   # Zero-dependency ThreadingHTTPServer REST API (`/api/v1/*`)
-│   └── test_server.py              # Unit & HTTP integration tests for all API endpoints
 ├── data/
 │   ├── rules.db                    # Persistent SQLite database (state, deduplication, cache)
 │   └── rules.json                  # Canonical dataset snapshot committed to the repo
 ├── docs/
 │   ├── user-guide.md               # End-user guide for the RuleIndex web app
-│   ├── api.md                      # REST API & static endpoint reference with usage examples
 │   ├── architecture.md             # This document
 │   ├── algorithms-and-configuration.md # Scraping, normalization, clustering & scoring details
 │   └── development-and-deployment.md   # Local setup, CI/CD, secrets & maintenance
