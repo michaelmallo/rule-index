@@ -118,9 +118,9 @@ npm run preview    # previews the production build locally
    - Checks out full git history (`fetch-depth: 0`) and installs cached Python dependencies.
    - Runs `python scraper/run.py --mode live` (automatically appending `--llm-canonicalize` if any LLM API key secret is configured).
    - Stages `data/rules.db`, `data/rules.json`, and `web/public/data/rules.json`, committing and pushing **only** if `git diff --cached --quiet` detects changes.
-   - Installs Node 22 dependencies (`npm ci`), builds `web/dist`, and uploads the Pages artifact via `actions/upload-pages-artifact@v3`.
+   - Installs Node 22 dependencies (`npm ci`), builds `web/dist`, and uploads the Pages artifact via `actions/upload-pages-artifact@v5`.
 2. **`deploy` job**:
-   - Deploys `web/dist` to the `github-pages` environment using `actions/deploy-pages@v4`.
+   - Deploys `web/dist` to the `github-pages` environment using `actions/deploy-pages@v5`.
 
 ---
 
