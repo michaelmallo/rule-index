@@ -45,6 +45,7 @@ Authoritative engineering rules and behavioral guidelines for AI coding agents c
 - **Do not add new third-party dependencies without justification or approval.** Prefer Python/Web standard library APIs and existing workspace packages first.
 - **Use the repository's configured package manager and virtual environment.** Use `scraper/.venv` with `scraper/requirements.txt` for Python (never global `pip install`) and `npm` with `web/package-lock.json` for the frontend.
 - **Pin GitHub Actions versions and runtime versions** in `.github/workflows/update-and-deploy.yml` for reproducible CI builds.
+- **Keep GitHub Actions on current, non-deprecated runner runtimes (Node.js 24+).** Never introduce or leave actions pinned to deprecated Node.js 20 majors; verify the latest official major release tag (e.g., via GitHub Releases) whenever adding or updating workflow actions so CI runs remain free of deprecation warnings.
 - **Load specialized `SKILL.md` workflows before improvising domain tasks** when an applicable skill is available.
 
 ## Communication & Planning
