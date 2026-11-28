@@ -47,12 +47,17 @@ rule-index/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── FilterPanel.tsx     # Reusable Minimum Adoption, Agent & Category filter UI
+│   │   │   ├── HelpPage.tsx        # Lazy-loaded in-app Help mirroring README & docs
+│   │   │   ├── RuleCard.tsx        # Memoized leaderboard rule card with selection checkbox
 │   │   │   ├── RuleDetailDialog.tsx# Native <dialog> modal for rule details & examples
+│   │   │   ├── RuleGeneratorDialog.tsx # Native <dialog> modal for generating Markdown rules files
 │   │   │   ├── ShareDialog.tsx     # Native <dialog> modal for social/email/SMS/link sharing
 │   │   │   ├── ThemeSwitcher.tsx   # 4-theme header switcher
 │   │   │   └── ToastRegion.tsx     # Accessible popover="manual" toast notification region
 │   │   ├── hooks/
 │   │   │   └── useLocalStorage.ts  # Cross-tab synced localStorage persistence hook
+│   │   ├── utils/
+│   │   │   └── ruleGenerator.ts    # Pure Top-N selection, deduplication & Markdown formatter
 │   │   ├── styles/
 │   │   │   └── themes.css          # Tailwind v4 + 4 theme palettes, dialog & scrollbox CSS
 │   │   ├── App.tsx                 # Main leaderboard layout, URL hydration, scrollbox logic

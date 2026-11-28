@@ -32,7 +32,9 @@ Software teams increasingly configure AI coding assistants using instruction fil
    - Type any keyword (such as `secrets`, `TypeScript`, or `pytest`) into the search bar for instant filtering.
    - Use the **Filters** sidebar (or tap **Filters** below the title on mobile) to narrow results by **Minimum Adoption** (`5+`, `25+`, `100+` repos), **Target Agent / System**, or **Rule Category**.
    - Click any active filter pill to remove it, or click **Reset Filters** to clear all filters at once.
-3. **Copy a Rule**: Click **Copy Rule** on any card to copy a clean Markdown bullet directive directly to your clipboard, ready to paste into your own `AGENTS.md`, `CLAUDE.md`, or `.cursorrules` file.
+3. **Copy a Rule or Generate a Full Rules File**:
+   - Click **Copy Rule** on any card to copy a single clean Markdown bullet directive to your clipboard.
+   - Check the selection box on individual cards or click **Generate Rules File** to build a complete generic Markdown rules file from your hand-picked rules and/or the top `N` rules per selected category, then copy or download it directly from the modal.
 4. **Inspect Real-World Examples**: Click **Examples** on a rule card to open a modal showing verbatim phrasing variations from public repositories along with direct links to the source files on GitHub.
 5. **Share & Personalize**:
    - Click the **Share** icon next to the `RuleIndex` title to copy a shareable link (optionally preserving your active filters) or share via social media, email, or messaging apps.

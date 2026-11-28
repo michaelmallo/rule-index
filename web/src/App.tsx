@@ -1,6 +1,7 @@
 import {
   ArrowUpDown,
   CircleHelp,
+  FileCode2,
   Flame,
   GitBranch,
   Layers,
@@ -25,6 +26,7 @@ import {
 import { FilterPanel } from './components/FilterPanel';
 import { RuleCard } from './components/RuleCard';
 import { RuleDetailDialog } from './components/RuleDetailDialog';
+import { RuleGeneratorDialog } from './components/RuleGeneratorDialog';
 import { ShareDialog } from './components/ShareDialog';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { ToastRegion } from './components/ToastRegion';
@@ -90,12 +92,17 @@ export function App() {
 
   const [theme, setTheme] = useLocalStorage<ThemeId>('ruleindex:theme', 'light');
   const [filters, setFilters] = useLocalStorage<FilterState>('ruleindex:filters', DEFAULT_FILTERS);
+  const [selectedRuleIds, setSelectedRuleIds] = useLocalStorage<string[]>(
+    'ruleindex:selectedRules',
+    []
+  );
 
   const [selectedRule, setSelectedRule] = useState<{ rule: CanonicalRule; rank: number } | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [generatorOpen, setGeneratorOpen] = useState(false);
   const [helpDocId, setHelpDocId] = useState<string | null>(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get('help');
@@ -352,6 +359,66 @@ export function App() {
     setSelectedRule({ rule, rank });
   }, []);
 
+  const selectedRuleIdSet = useMemo(() => new Set(selectedRuleIds), [selectedRuleIds]);
+
+  const manualSelectedRules = useMemo(() => {
+    if (selectedRuleIds.length === 0 || rules.length === 0) return [];
+    const byId = new Map<string, CanonicalRule>();
+    for (const rule of rules) {
+      byId.set(rule.id, rule);
+    }
+    const resolved: CanonicalRule[] = [];
+    for (const id of selectedRuleIds) {
+      const found = byId.get(id);
+      if (found) resolved.push(found);
+    }
+    return resolved;
+  }, [rules, selectedRuleIds]);
+
+  const allSortedRules = useMemo(() => {
+    if (!generatorOpen) return [];
+    const copy = [...indexedRules];
+    if (deferredSort === 'weighted') {
+      copy.sort(
+        (a, b) =>
+          b.rule.weighted_score - a.rule.weighted_score ||
+          b.rule.adoption_count - a.rule.adoption_count
+      );
+    } else if (deferredSort === 'trending') {
+      copy.sort(
+        (a, b) =>
+          b.firstSeenMs - a.firstSeenMs || b.rule.weighted_score - a.rule.weighted_score
+      );
+    } else {
+      copy.sort(
+        (a, b) =>
+          b.rule.adoption_count - a.rule.adoption_count ||
+          b.rule.weighted_score - a.rule.weighted_score
+      );
+    }
+    return copy.map((entry) => entry.rule);
+  }, [deferredSort, generatorOpen, indexedRules]);
+
+  const toggleSelectRule = useCallback(
+    (ruleId: string) => {
+      setSelectedRuleIds((prev) =>
+        prev.includes(ruleId) ? prev.filter((id) => id !== ruleId) : [...prev, ruleId]
+      );
+    },
+    [setSelectedRuleIds]
+  );
+
+  const removeSelectedRule = useCallback(
+    (ruleId: string) => {
+      setSelectedRuleIds((prev) => prev.filter((id) => id !== ruleId));
+    },
+    [setSelectedRuleIds]
+  );
+
+  const clearSelectedRules = useCallback(() => {
+    setSelectedRuleIds([]);
+  }, [setSelectedRuleIds]);
+
   const activeFilterCount =
     filters.agents.length +
     filters.categories.length +
@@ -542,8 +609,8 @@ export function App() {
             </div>
           </div>
 
-          {/* Mobile / Tablet Filters Trigger directly below the title */}
-          <div className="flex items-center lg:hidden">
+          {/* Mobile / Tablet Filters & Generator Triggers directly below the title */}
+          <div className="flex items-center gap-2 lg:hidden">
             <button
               type="button"
               onClick={() => setMobileDrawerOpen(true)}
@@ -564,6 +631,28 @@ export function App() {
                   style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
                 >
                   {activeFilterCount}
+                </span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setGeneratorOpen(true)}
+              className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold cursor-pointer"
+              style={{
+                backgroundColor: 'var(--accent-soft)',
+                borderColor: 'var(--accent)',
+                color: 'var(--accent-text)',
+              }}
+            >
+              <FileCode2 className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>Generate Rules</span>
+              {manualSelectedRules.length > 0 && (
+                <span
+                  className="inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold"
+                  style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                >
+                  {manualSelectedRules.length}
                 </span>
               )}
             </button>
@@ -761,17 +850,41 @@ export function App() {
                   )}
                 </div>
 
-                {hasActiveFilters && (
+                <div className="flex items-center gap-2">
+                  {hasActiveFilters && (
+                    <button
+                      type="button"
+                      onClick={resetFilters}
+                      className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold cursor-pointer hover:underline"
+                      style={{ color: 'var(--accent-text)' }}
+                    >
+                      <RotateCcw className="h-3 w-3" aria-hidden="true" />
+                      Reset Filters
+                    </button>
+                  )}
+
                   <button
                     type="button"
-                    onClick={resetFilters}
-                    className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold cursor-pointer hover:underline"
-                    style={{ color: 'var(--accent-text)' }}
+                    onClick={() => setGeneratorOpen(true)}
+                    className="hidden min-h-8 items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-colors cursor-pointer lg:inline-flex"
+                    style={{
+                      backgroundColor: 'var(--accent-soft)',
+                      borderColor: 'var(--accent)',
+                      color: 'var(--accent-text)',
+                    }}
                   >
-                    <RotateCcw className="h-3 w-3" aria-hidden="true" />
-                    Reset Filters
+                    <FileCode2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    <span>Generate Rules File</span>
+                    {manualSelectedRules.length > 0 && (
+                      <span
+                        className="inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold"
+                        style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+                      >
+                        {manualSelectedRules.length}
+                      </span>
+                    )}
                   </button>
-                )}
+                </div>
               </div>
             </div>
 
@@ -841,9 +954,11 @@ export function App() {
                       rule={rule}
                       rank={index + 1}
                       isCopied={copiedId === rule.id}
+                      isSelected={selectedRuleIdSet.has(rule.id)}
                       isDeferred={index >= ABOVE_THE_FOLD_CARD_COUNT}
                       selectedAgents={filters.agents}
                       onToggleAgent={toggleAgent}
+                      onToggleSelect={toggleSelectRule}
                       onCopyRule={handleCopyRule}
                       onSelectRule={handleSelectRule}
                     />
@@ -970,6 +1085,55 @@ export function App() {
         hasActiveFilters={hasActiveFilters}
         onClose={() => setShareOpen(false)}
       />
+
+      {/* Rules File Generator Modal (<dialog>) */}
+      <RuleGeneratorDialog
+        open={generatorOpen}
+        allSortedRules={allSortedRules}
+        filteredRules={filteredRules}
+        hasActiveFilters={hasActiveFilters}
+        activeCategories={filters.categories}
+        activeSort={filters.sort}
+        manualSelectedRules={manualSelectedRules}
+        onRemoveManualRule={removeSelectedRule}
+        onClearManualRules={clearSelectedRules}
+        onCopiedToast={(msg) => setToastMessage(msg)}
+        onClose={() => setGeneratorOpen(false)}
+      />
+
+      {/* Sticky Bottom Selection Bar when rules are hand-picked */}
+      {manualSelectedRules.length > 0 && (
+        <div
+          role="region"
+          aria-label="Selected rules actions"
+          className="fixed bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2.5 rounded-2xl border px-3.5 py-2 shadow-xl backdrop-blur-md sm:gap-3 sm:px-4"
+          style={{
+            backgroundColor: 'color-mix(in srgb, var(--bg-surface) 95%, transparent)',
+            borderColor: 'var(--accent)',
+          }}
+        >
+          <span className="whitespace-nowrap text-xs font-semibold sm:text-sm" style={{ color: 'var(--text-primary)' }}>
+            {manualSelectedRules.length} {manualSelectedRules.length === 1 ? 'rule' : 'rules'} selected
+          </span>
+          <button
+            type="button"
+            onClick={clearSelectedRules}
+            className="rounded-lg px-2 py-1 text-xs font-medium cursor-pointer hover:underline"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            Clear
+          </button>
+          <button
+            type="button"
+            onClick={() => setGeneratorOpen(true)}
+            className="inline-flex min-h-8 items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-1.5 text-xs font-semibold cursor-pointer"
+            style={{ backgroundColor: 'var(--accent)', color: '#ffffff' }}
+          >
+            <FileCode2 className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>Generate Rules File</span>
+          </button>
+        </div>
+      )}
 
       {/* Accessible Top-Layer Toast Notifications */}
       <ToastRegion message={toastMessage} onDismiss={() => setToastMessage(null)} />

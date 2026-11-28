@@ -154,6 +154,18 @@ dialog.share-dialog[open] {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
 }
 
+dialog.rule-generator-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  width: min(46rem, calc(100vw - 1.5rem));
+  max-height: min(90dvh, 52rem);
+  margin: auto;
+  border-radius: 1rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
 dialog.mobile-filter-dialog[open] {
   display: flex;
   flex-direction: column;
