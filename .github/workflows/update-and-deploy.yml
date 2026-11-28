@@ -2,8 +2,8 @@ name: Update Rules & Deploy RuleIndex
 
 on:
   schedule:
-    # Run hourly at minute 0
-    - cron: '0 * * * *'
+    # Run hourly at an off-peak minute (:37) to avoid top-of-hour GitHub Actions queue spikes
+    - cron: '37 * * * *'
   workflow_dispatch:
   push:
     branches:

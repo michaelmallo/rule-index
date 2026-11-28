@@ -109,7 +109,7 @@ npm run preview    # previews the production build locally
 ## 4. Automated CI/CD Workflow (`update-and-deploy.yml`)
 
 `.github/workflows/update-and-deploy.yml` runs automatically:
-- **Hourly** via `cron: '0 * * * *'`
+- **Hourly** via `cron: '37 * * * *'` (off-peak minute to avoid top-of-hour runner contention)
 - On **push to `main`**
 - Manually via **`workflow_dispatch`**
 
