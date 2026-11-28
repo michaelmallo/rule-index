@@ -4,7 +4,6 @@ import { useEffect, useMemo } from 'react';
 import type { MouseEvent } from 'react';
 import readmeMd from '../../../README.md?raw';
 import algorithmsMd from '../../../docs/algorithms-and-configuration.md?raw';
-import apiMd from '../../../docs/api.md?raw';
 import architectureMd from '../../../docs/architecture.md?raw';
 import devDeployMd from '../../../docs/development-and-deployment.md?raw';
 import userGuideMd from '../../../docs/user-guide.md?raw';
@@ -32,12 +31,6 @@ export const HELP_DOCS: HelpDocEntry[] = [
     content: userGuideMd,
   },
   {
-    id: 'api',
-    title: 'REST API Reference',
-    shortTitle: 'REST API',
-    content: apiMd,
-  },
-  {
     id: 'architecture',
     title: 'Architecture & Codebase Reference',
     shortTitle: 'Architecture',
@@ -60,7 +53,6 @@ export const HELP_DOCS: HelpDocEntry[] = [
 const MD_FILE_TO_DOC_ID: Record<string, string> = {
   'readme.md': 'overview',
   'user-guide.md': 'user-guide',
-  'api.md': 'api',
   'architecture.md': 'architecture',
   'algorithms-and-configuration.md': 'algorithms-and-configuration',
   'development-and-deployment.md': 'development-and-deployment',

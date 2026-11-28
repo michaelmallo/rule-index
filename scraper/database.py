@@ -493,33 +493,4 @@ class RuleDatabase:
                 encoding="utf-8",
             )
 
-            # Also emit lightweight static read-only API endpoints under web/public/api/v1/
-            if is_web_asset and path.name == "rules.json":
-                api_v1_dir = path.parent.parent / "api" / "v1"
-                api_v1_dir.mkdir(parents=True, exist_ok=True)
-                stats_payload = {
-                    "generated_at": payload["generated_at"],
-                    **payload["stats"],
-                }
-                (api_v1_dir / "stats.json").write_text(
-                    json.dumps(stats_payload, indent=2, ensure_ascii=False) + "\n",
-                    encoding="utf-8",
-                )
-
-                top_by_category: dict[str, list[dict]] = {cat: [] for cat in ALL_CATEGORIES}
-                for item in payload["rules"]:
-                    bucket = top_by_category.get(item["category"])
-                    if bucket is not None and len(bucket) < 10:
-                        bucket.append(item)
-                top_rules_payload = {
-                    "generated_at": payload["generated_at"],
-                    "stats": payload["stats"],
-                    "top_overall": payload["rules"][:100],
-                    "top_by_category": top_by_category,
-                }
-                (api_v1_dir / "top-rules.json").write_text(
-                    json.dumps(top_rules_payload, separators=(",", ":"), ensure_ascii=False),
-                    encoding="utf-8",
-                )
-
         return payload
