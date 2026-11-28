@@ -10,6 +10,7 @@ Software teams increasingly configure AI coding assistants using instruction fil
 
 - **Overview & Quick Start** *(current page)* — High-level overview of RuleIndex and a quick guide to using the web application.
 - [Web App User Guide](docs/user-guide.md) — Detailed walkthrough of searching, filtering, sorting, copying rules, inspecting real-world examples, sharing links, and customizing themes.
+- [REST API Reference](docs/api.md) — Complete reference and usage examples for the RuleIndex RESTful API, static GitHub Pages JSON endpoints, and web page URL automation.
 - [Architecture & Codebase Reference](docs/architecture.md) — Complete repository layout, file-by-file breakdown, database schema, JSON dataset format, and frontend component overview.
 - [Algorithms, Scraping & Configuration](docs/algorithms-and-configuration.md) — Deep-dive into GitHub discovery, language sharding, revisit windows, rule parsing, English normalization, semantic clustering, and ranking math.
 - [Development, Setup & Deployment](docs/development-and-deployment.md) — Instructions for running the scraper and frontend locally, configuring GitHub Pages, managing optional API secrets, and maintaining the pipeline.

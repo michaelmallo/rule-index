@@ -103,6 +103,8 @@ export function App() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [generatorOpen, setGeneratorOpen] = useState(false);
+  const [urlGeneratorTopN, setUrlGeneratorTopN] = useState<number | null>(null);
+  const [urlGeneratorSummaries, setUrlGeneratorSummaries] = useState<boolean | null>(null);
   const [helpDocId, setHelpDocId] = useState<string | null>(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get('help');
@@ -169,6 +171,21 @@ export function App() {
 
     if (Object.keys(next).length > 0) {
       setFilters((prev) => ({ ...prev, ...next }));
+    }
+
+    const generateParam = params.get('generate');
+    if (generateParam === '1' || generateParam === 'true') {
+      const topNParam = Number.parseInt(params.get('top_n') ?? '', 10);
+      if (!Number.isNaN(topNParam) && topNParam >= 1 && topNParam <= 25) {
+        setUrlGeneratorTopN(topNParam);
+      }
+      const summariesParam = params.get('include_summaries');
+      if (summariesParam === '0' || summariesParam === 'false') {
+        setUrlGeneratorSummaries(false);
+      } else if (summariesParam === '1' || summariesParam === 'true') {
+        setUrlGeneratorSummaries(true);
+      }
+      setGeneratorOpen(true);
     }
   }, [setFilters]);
 
@@ -1094,11 +1111,17 @@ export function App() {
         hasActiveFilters={hasActiveFilters}
         activeCategories={filters.categories}
         activeSort={filters.sort}
+        initialTopN={urlGeneratorTopN}
+        initialIncludeSummaries={urlGeneratorSummaries}
         manualSelectedRules={manualSelectedRules}
         onRemoveManualRule={removeSelectedRule}
         onClearManualRules={clearSelectedRules}
         onCopiedToast={(msg) => setToastMessage(msg)}
-        onClose={() => setGeneratorOpen(false)}
+        onClose={() => {
+          setGeneratorOpen(false);
+          setUrlGeneratorTopN(null);
+          setUrlGeneratorSummaries(null);
+        }}
       />
 
       {/* Sticky Bottom Selection Bar when rules are hand-picked */}
